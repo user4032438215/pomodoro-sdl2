@@ -1,16 +1,23 @@
 ﻿#include <SDL.h>
+#include <SDL_ttf.h>
 #include <iostream>
 #include <chrono>
 
 int main(int argc, char* argv[])
 {
-    // SDL の初期化
+    // SDL 初期化
     if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         std::cerr << "SDL_Init Error: " << SDL_GetError() << std::endl;
         return 1;
     }
 
-    // ウィンドウ作成
+    // SDL_ttf 初期化
+    if (TTF_Init() != 0) {
+        std::cerr << "TTF_Init Error: " << TTF_GetError() << std::endl;
+        SDL_Quit();
+        return 1;
+    }
+
     SDL_Window* window = SDL_CreateWindow(
         "Pomodoro Timer",
         SDL_WINDOWPOS_CENTERED,
@@ -19,53 +26,75 @@ int main(int argc, char* argv[])
         SDL_WINDOW_SHOWN
     );
 
-    if (!window) {
-        std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-        SDL_Quit();
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    // フォント読み込み（好きなフォントに変えてOK）
+    TTF_Font* font = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 64);
+    if (!font) {
+        std::cerr << "Font load error: " << TTF_GetError() << std::endl;
         return 1;
     }
 
-    // -----------------------------
-    // ここから chrono タイマーの準備
-    // -----------------------------
+    // chrono タイマー準備
     using clock = std::chrono::steady_clock;
-
-    const int totalSeconds = 25 * 60; // 25分
-    auto startTime = clock::now();    // タイマー開始時刻
+    const int totalSeconds = 25 * 60;
+    auto startTime = clock::now();
 
     bool running = true;
     SDL_Event event;
 
     while (running) {
-        // イベント処理（×ボタンなど）
         while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
-            }
+            if (event.type == SDL_QUIT) running = false;
         }
 
-        // -----------------------------
-        // chrono で経過時間を計算
-        // -----------------------------
+        // 経過時間
         auto now = clock::now();
-        auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
+        int elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - startTime).count();
         int remaining = totalSeconds - elapsed;
-
         if (remaining < 0) remaining = 0;
 
-        // MM:SS に整形
         int minutes = remaining / 60;
         int seconds = remaining % 60;
 
-        // コンソールに出力（UIなし）
-        std::cout << minutes << ":" << (seconds < 10 ? "0" : "") << seconds << "\r";
-        std::cout.flush();
+        // MM:SS の文字列を作る
+        char buffer[16];
+        snprintf(buffer, sizeof(buffer), "%02d:%02d", minutes, seconds);
 
-        // SDL のループを軽く休ませる（CPU暴走防止）
-        SDL_Delay(16); // 約60fps
+        // SDL_ttf でテキスト描画準備
+        SDL_Color white = { 255, 255, 255, 255 };
+        SDL_Surface* surface = TTF_RenderText_Blended(font, buffer, white);
+        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+
+        // テキストのサイズ
+        int textW = surface->w;
+        int textH = surface->h;
+        SDL_FreeSurface(surface);
+
+        SDL_Rect dst = {
+            320 - textW / 2,
+            240 - textH / 2,
+            textW,
+            textH
+        };
+
+        // 背景クリア
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+        // テキスト描画
+        SDL_RenderCopy(renderer, texture, NULL, &dst);
+        SDL_DestroyTexture(texture);
+
+        SDL_RenderPresent(renderer);
+
+        SDL_Delay(16);
     }
 
+    TTF_CloseFont(font);
+    SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }

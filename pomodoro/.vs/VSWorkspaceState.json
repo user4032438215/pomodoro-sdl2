@@ -12,8 +12,12 @@
     ]
   },
   "ExpandedNodes": [
-    ""
+    "",
+    "\\out",
+    "\\out\\build",
+    "\\out\\build\\x64-debug\\.cmake",
+    "\\pomodoro"
   ],
-  "SelectedNode": "\\.gitignore",
+  "SelectedNode": "\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false
 }

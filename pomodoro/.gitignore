@@ -17,3 +17,5 @@ CMakeCache.txt
 *.ninja
 *.ninja_deps
 *.ninja_log
+
+.vs/
