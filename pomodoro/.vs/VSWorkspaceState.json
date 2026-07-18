@@ -13,10 +13,8 @@
   },
   "ExpandedNodes": [
     "",
-    "\\out",
-    "\\out\\build",
-    "\\out\\build\\x64-debug\\.cmake",
-    "\\pomodoro"
+    "\\assets",
+    "\\src"
   ],
   "SelectedNode": "\\CMakeLists.txt",
   "PreviewInSolutionExplorer": false

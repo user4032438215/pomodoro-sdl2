@@ -11,7 +11,8 @@ find_package(SDL2 CONFIG REQUIRED)
 find_package(SDL2_ttf CONFIG REQUIRED)   # ← 追加
 
 add_executable(pomodoro
-    pomodoro/pomodoro.cpp
+    src/main.cpp
+
 )
 
 target_link_libraries(pomodoro PRIVATE
