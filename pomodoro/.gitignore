@@ -19,3 +19,8 @@ CMakeCache.txt
 *.ninja_log
 
 .vs/
+out/
+build/
+CMakeFiles/
+CMakeCache.txt
+config/settings.json
