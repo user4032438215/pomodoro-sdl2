@@ -13,6 +13,8 @@ find_package(SDL2_ttf CONFIG REQUIRED)   # ← 追加
 add_executable(pomodoro
     src/main.cpp
 
+    src/pomodoro_timer.cpp
+    src/pomodoro_session.cpp
 )
 
 target_link_libraries(pomodoro PRIVATE
