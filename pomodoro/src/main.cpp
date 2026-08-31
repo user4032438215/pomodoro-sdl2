@@ -1,32 +1,34 @@
 ﻿#include <iostream>
 #include <thread>
+
 #include "pomodoro_timer.hpp"
+#include "pomodoro_session.hpp"
 
-int main() {
-    PomodoroTimer timer(5); // 5秒のテストタイマー
+int main()
+{
+    PomodoroSession session(4); // 4回作業したら長休憩
 
-    std::cout << "start()" << std::endl;
-    timer.start();
+    for (int i = 0; i < 6; ++i) {
+        std::cout << "\n=== セッション開始 ===\n";
+        std::cout << "種類: " << session.get_session_name() << '\n';
 
-    // 2秒待つ
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    std::cout << "残り: " << timer.get_remaining_seconds() << " 秒" << std::endl;
+        int duration_min = session.get_duration_minutes();
+        int duration_sec = duration_min * 60;
 
-    std::cout << "pause()" << std::endl;
-    timer.pause();
+        std::cout << "時間: " << duration_min << " 分\n";
 
-    // 2秒待つ（pause中なので減らない）
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    std::cout << "pause中の残り: " << timer.get_remaining_seconds() << " 秒" << std::endl;
+        PomodoroTimer timer(duration_sec);
+        timer.start();
 
-    std::cout << "resume()" << std::endl;
-    timer.resume();
+        while (!timer.is_finished()) {
+            std::cout << "残り: " << timer.get_remaining_seconds() << " 秒\n";
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+        }
 
-    // 2秒待つ（resumeしたので減る）
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    std::cout << "再開後の残り: " << timer.get_remaining_seconds() << " 秒" << std::endl;
+        std::cout << "=== セッション終了 ===\n";
 
-    std::cout << "is_finished(): " << timer.is_finished() << std::endl;
+        session.next();
+    }
 
     return 0;
 }

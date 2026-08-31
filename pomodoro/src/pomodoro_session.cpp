@@ -1,45 +1,68 @@
 #include "pomodoro_session.hpp"
 
 PomodoroSession::PomodoroSession(int long_break_interval)
-    : work_count_(0),
+    : completed_work_sessions_(0),
     long_break_interval_(long_break_interval),
-    current_(SessionType::Work) {
+    current_(SessionType::WORK)
+{
 }
 
-void PomodoroSession::next() {
-    if (current_ == SessionType::Work) {
-        work_count_++;
+void PomodoroSession::reset()
+{
+    completed_work_sessions_ = 0;
+    current_ = SessionType::WORK;
+}
 
-        if (work_count_ % long_break_interval_ == 0) {
-            current_ = SessionType::LongBreak;
+bool PomodoroSession::should_take_long_break() const
+{
+    return (completed_work_sessions_ > 0 &&
+        completed_work_sessions_ % long_break_interval_ == 0);
+}
+
+void PomodoroSession::next()
+{
+    if (current_ == SessionType::WORK) {
+        completed_work_sessions_++;
+
+        if (should_take_long_break()) {
+            current_ = SessionType::LONG_BREAK;
         }
         else {
-            current_ = SessionType::ShortBreak;
+            current_ = SessionType::SHORT_BREAK;
         }
     }
     else {
-        current_ = SessionType::Work;
+        current_ = SessionType::WORK;
     }
 }
 
-SessionType PomodoroSession::get_type() const {
+SessionType PomodoroSession::get_type() const
+{
     return current_;
 }
 
-int PomodoroSession::get_duration_minutes() const {
+int PomodoroSession::get_duration_minutes() const
+{
     switch (current_) {
-    case SessionType::Work:       return 25;
-    case SessionType::ShortBreak: return 5;
-    case SessionType::LongBreak:  return 15;
+    case SessionType::WORK:
+        return 25;
+    case SessionType::SHORT_BREAK:
+        return 5;
+    case SessionType::LONG_BREAK:
+        return 15;
     }
     return 25;
 }
 
-std::string PomodoroSession::get_session_name() const {
+std::string PomodoroSession::get_session_name() const
+{
     switch (current_) {
-    case SessionType::Work:       return "Work";
-    case SessionType::ShortBreak: return "Short Break";
-    case SessionType::LongBreak:  return "Long Break";
+    case SessionType::WORK:
+        return "Work";
+    case SessionType::SHORT_BREAK:
+        return "Short Break";
+    case SessionType::LONG_BREAK:
+        return "Long Break";
     }
     return "Work";
 }

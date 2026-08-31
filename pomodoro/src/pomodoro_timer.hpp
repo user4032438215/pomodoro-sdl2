@@ -2,10 +2,10 @@
 #include <chrono>
 
 enum class TimerState {
-    Idle,
-    Running,
-    Paused,
-    Finished
+    IDLE,
+    RUNNING,
+    PAUSED,
+    FINISHED
 };
 
 class PomodoroTimer {
@@ -25,7 +25,7 @@ public:
 private:
     int duration_sec_;
     int paused_elapsed_sec_;
-    
+
     TimerState state_;
 
     std::chrono::steady_clock::time_point started_at_;
