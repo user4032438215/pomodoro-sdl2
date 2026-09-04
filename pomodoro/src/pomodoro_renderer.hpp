@@ -15,6 +15,9 @@ public:
     void render_text(const std::string& text, int x, int y);
     void present();
 
+    void render_timer(int remaining_sec, float progress);
+    void render_session_name(const std::string& name);
+
 private:
     SDL_Window* window_;
     SDL_Renderer* renderer_;
