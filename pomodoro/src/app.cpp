@@ -31,6 +31,9 @@ void App::run()
         renderer_.render_session_name(session_.get_session_name());
         renderer_.render_timer(timer_.get_remaining_seconds(), timer_.get_progress());
 
+        renderer_.render_progress_bar(timer_.get_progress()); //
+
+
         renderer_.present();
 
         if (timer_.is_finished()) {

@@ -117,3 +117,32 @@ void PomodoroRenderer::render_session_name(const std::string& name)
 {
     render_text("Session: " + name, 50, 70);
 }
+
+
+void PomodoroRenderer::render_progress_bar(float progress) //
+{
+    const int x = 50;
+    const int y = 400;
+    const int width = 500;
+    const int height = 20;
+
+    // 背景バー（灰色）
+    SDL_Rect bg;
+    bg.x = x;
+    bg.y = y;
+    bg.w = width;
+    bg.h = height;
+
+    SDL_SetRenderDrawColor(renderer_, 80, 80, 80, 255);
+    SDL_RenderFillRect(renderer_, &bg);
+
+    // 進捗バー（緑）
+    SDL_Rect fg;
+    fg.x = x;
+    fg.y = y;
+    fg.w = static_cast<int>(width * progress);
+    fg.h = height;
+
+    SDL_SetRenderDrawColor(renderer_, 0, 200, 0, 255);
+    SDL_RenderFillRect(renderer_, &fg);
+}
