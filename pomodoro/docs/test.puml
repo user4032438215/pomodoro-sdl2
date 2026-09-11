@@ -5,16 +5,16 @@ skinparam classAttributeIconSize 0
 package "Core" {
 
     enum SessionType {
-        Work
-        ShortBreak
-        LongBreak
+        WORK
+        SHORT_BREAK
+        LONG_BREAK
     }
 
     enum TimerState {
-        Idle
-        Running
-        Paused
-        Finished
+        IDLE
+        RUNNING
+        PAUSED
+        FINISHED
     }
 
     class PomodoroTimer {
@@ -38,9 +38,15 @@ package "Core" {
     class PomodoroSession {
         - completed_work_sessions_ : int
         - long_break_interval_ : int
+        - work_minutes_ : int
+        - short_break_minutes_ : int
+        - long_break_minutes_ : int
         - current_ : SessionType
 
-        + PomodoroSession(long_break_interval : int)
+        + PomodoroSession(long_break_interval : int,
+                          work_minutes : int,
+                          short_break_minutes : int,
+                          long_break_minutes : int)
         + next() : void
         + reset() : void
         + get_type() : SessionType
@@ -49,19 +55,17 @@ package "Core" {
         + should_take_long_break() : bool
     }
 
-    class PomodoroSettings {
+    class Settings {
         - work_minutes_ : int
         - short_break_minutes_ : int
         - long_break_minutes_ : int
         - long_break_interval_ : int
 
-        + load_from_json(path : string) : bool
-        + save_to_json(path : string) : bool
-        + validate() : bool
-        + get_work_minutes() : int
-        + get_short_break_minutes() : int
-        + get_long_break_minutes() : int
-        + get_long_break_interval() : int
+        + load(path : string) : bool
+        + work_minutes() : int
+        + short_break_minutes() : int
+        + long_break_minutes() : int
+        + long_break_interval() : int
     }
 }
 
@@ -74,50 +78,36 @@ package "UI" {
 
         + PomodoroRenderer()
         + ~PomodoroRenderer()
-        + init() : bool
+        + init(title : string, w : int, h : int) : bool
         + shutdown() : void
         + clear() : void
         + render_time(remaining_sec : int) : void
         + render_progress(progress : float) : void
+        + render_progress_bar(progress : float) : void
         + render_session_name(name : string) : void
         + present() : void
-    }
-}
-
-package "Infrastructure" {
-
-    class PomodoroNotification {
-        + notify_session_start(name : string) : void
-        + notify_session_end(name : string) : void
     }
 }
 
 package "Application" {
 
     class App {
+        - settings_ : Settings
         - timer_ : PomodoroTimer
         - session_ : PomodoroSession
-        - settings_ : PomodoroSettings
         - renderer_ : PomodoroRenderer
-        - notification_ : PomodoroNotification
         - running_ : bool
 
         + App()
-        + ~App()
         + init() : bool
-        + run() : int
-        + handle_input() : void
-        + update() : void
-        + render() : void
-        + switch_session() : void
+        + run() : void
     }
 }
 
 App *-- PomodoroTimer
 App *-- PomodoroSession
-App *-- PomodoroSettings
+App *-- Settings
 App *-- PomodoroRenderer
-App *-- PomodoroNotification
 
 PomodoroSession --> SessionType
 PomodoroTimer --> TimerState
