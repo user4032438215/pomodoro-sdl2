@@ -20,6 +20,7 @@ public:
     int get_remaining_seconds() const;
     float get_progress() const;
     bool is_finished() const;
+
     TimerState get_state() const;
 
 private:

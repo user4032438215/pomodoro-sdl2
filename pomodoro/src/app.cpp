@@ -29,18 +29,46 @@ bool App::init()
     return renderer_.init("Pomodoro", 640, 480);
 }
 
+//void App::run()
+//{
+//    timer_.start();
+//
+//    SDL_Event event;
+//
+//    while (running_) {
+//        while (SDL_PollEvent(&event)) {
+//            if (event.type == SDL_QUIT) {
+//                running_ = false;
+//            }
+//        }
+//
+//        renderer_.clear();
+//
+//        renderer_.render_session_name(session_.get_session_name());
+//        renderer_.render_timer(timer_.get_remaining_seconds(), timer_.get_progress());
+//        renderer_.render_progress_bar(timer_.get_progress());
+//
+//        renderer_.present();
+//
+//        if (timer_.is_finished()) {
+//            session_.next();
+//            timer_.reset(session_.get_duration_minutes() * 60);
+//            timer_.start();
+//        }
+//
+//        SDL_Delay(16);
+//    }
+//
+//    renderer_.shutdown();
+//}
+
 void App::run()
 {
     timer_.start();
 
-    SDL_Event event;
-
     while (running_) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running_ = false;
-            }
-        }
+
+        handle_events();   // ★追加：イベント処理を分離
 
         renderer_.clear();
 
@@ -60,4 +88,46 @@ void App::run()
     }
 
     renderer_.shutdown();
+}
+
+
+void App::handle_events()
+{
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event)) {
+
+        if (event.type == SDL_QUIT) {
+            running_ = false;
+        }
+
+        if (event.type == SDL_KEYDOWN) {
+            switch (event.key.keysym.sym) {
+
+            case SDLK_ESCAPE:
+                running_ = false;
+                break;
+
+            case SDLK_SPACE:
+                if (timer_.get_state() == TimerState::RUNNING) {
+                    timer_.pause();        // ★一時停止
+                }
+                else if (timer_.get_state() == TimerState::PAUSED) {
+                    timer_.resume();       // ★再開
+                }
+                break;
+
+            case SDLK_r:
+                timer_.reset(session_.get_duration_minutes() * 60); // ★リセット
+                timer_.start();
+                break;
+
+            case SDLK_n:
+                session_.next();          // ★次のセッションへ
+                timer_.reset(session_.get_duration_minutes() * 60);
+                timer_.start();
+                break;
+            }
+        }
+    }
 }

@@ -11,10 +11,12 @@ public:
     void run();
 
 private:
-    Settings settings_; //
+    Settings settings_; 
 
     PomodoroTimer timer_;
     PomodoroSession session_;
     PomodoroRenderer renderer_;
     bool running_;
+
+    void handle_events();   // 
 };

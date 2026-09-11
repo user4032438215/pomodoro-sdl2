@@ -28,8 +28,16 @@ void PomodoroTimer::resume()
 {
     if (state_ == TimerState::PAUSED) {
         auto now = SteadyClock::now();
-        auto paused_duration = std::chrono::duration_cast<std::chrono::seconds>(now - paused_at_);
+
+        // 停止していた時間を加算
+        auto paused_duration =
+            std::chrono::duration_cast<std::chrono::seconds>(now - paused_at_);
+
         paused_elapsed_sec_ += static_cast<int>(paused_duration.count());
+
+        // 再開した瞬間を新しい開始時刻として記録
+        started_at_ = now;
+
         state_ = TimerState::RUNNING;
     }
 }
@@ -43,13 +51,23 @@ void PomodoroTimer::reset(int duration_sec)
 
 int PomodoroTimer::get_remaining_seconds() const
 {
+    // まだ開始していない
     if (state_ == TimerState::IDLE) {
         return duration_sec_;
     }
 
+    // 一時停止中は時間を進めない
+    if (state_ == TimerState::PAUSED) {
+        int remaining = duration_sec_ - paused_elapsed_sec_;
+        return remaining > 0 ? remaining : 0;
+    }
+
+    // RUNNING のときは「停止時間 + 再開後の経過時間」
     auto now = SteadyClock::now();
-    auto elapsed = std::chrono::duration_cast<std::chrono::seconds>(now - started_at_);
-    int total_elapsed = static_cast<int>(elapsed.count()) - paused_elapsed_sec_;
+    auto elapsed_since_start =
+        std::chrono::duration_cast<std::chrono::seconds>(now - started_at_);
+
+    int total_elapsed = paused_elapsed_sec_ + static_cast<int>(elapsed_since_start.count());
 
     int remaining = duration_sec_ - total_elapsed;
     return remaining > 0 ? remaining : 0;
