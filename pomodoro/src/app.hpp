@@ -2,6 +2,7 @@
 #include "pomodoro_timer.hpp"
 #include "pomodoro_session.hpp"
 #include "pomodoro_renderer.hpp"
+#include "settings.hpp"
 
 class App {
 public:
@@ -10,6 +11,8 @@ public:
     void run();
 
 private:
+    Settings settings_; //
+
     PomodoroTimer timer_;
     PomodoroSession session_;
     PomodoroRenderer renderer_;

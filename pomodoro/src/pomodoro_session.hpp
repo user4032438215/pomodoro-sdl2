@@ -9,7 +9,10 @@ enum class SessionType {
 
 class PomodoroSession {
 public:
-    explicit PomodoroSession(int long_break_interval);
+    PomodoroSession(int long_break_interval,
+        int work_minutes,
+        int short_break_minutes,
+        int long_break_minutes);
 
     void next();
     void reset();
@@ -24,4 +27,9 @@ private:
     int completed_work_sessions_;
     int long_break_interval_;
     SessionType current_;
+
+    // ★追加
+    int work_minutes_;            
+    int short_break_minutes_;     
+    int long_break_minutes_;      
 };

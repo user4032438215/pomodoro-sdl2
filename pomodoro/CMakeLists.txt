@@ -20,6 +20,7 @@ add_executable(pomodoro
     src/pomodoro_renderer.cpp
     src/pomodoro_timer.cpp
     src/pomodoro_session.cpp
+    src/settings.cpp #
 )
 
 target_link_libraries(pomodoro PRIVATE
@@ -27,3 +28,5 @@ target_link_libraries(pomodoro PRIVATE
     SDL2::SDL2main
     SDL2_ttf::SDL2_ttf            
 )
+
+include_directories(${CMAKE_SOURCE_DIR}/external)#

@@ -1,10 +1,32 @@
 #include "pomodoro_session.hpp"
 
-PomodoroSession::PomodoroSession(int long_break_interval)
+
+// ★変更：設定値を受け取る新コンストラクタ
+PomodoroSession::PomodoroSession(int long_break_interval,
+    int work_minutes,
+    int short_break_minutes,
+    int long_break_minutes)
     : completed_work_sessions_(0),
     long_break_interval_(long_break_interval),
+    work_minutes_(work_minutes),            // ★追加済みメンバ
+    short_break_minutes_(short_break_minutes),
+    long_break_minutes_(long_break_minutes),
     current_(SessionType::WORK)
 {
+}
+
+// ★変更：設定値を返す get_duration_minutes（これが正しい）
+int PomodoroSession::get_duration_minutes() const
+{
+    switch (current_) {
+    case SessionType::WORK:
+        return work_minutes_;
+    case SessionType::SHORT_BREAK:
+        return short_break_minutes_;
+    case SessionType::LONG_BREAK:
+        return long_break_minutes_;
+    }
+    return work_minutes_;
 }
 
 void PomodoroSession::reset()
@@ -41,18 +63,7 @@ SessionType PomodoroSession::get_type() const
     return current_;
 }
 
-int PomodoroSession::get_duration_minutes() const
-{
-    switch (current_) {
-    case SessionType::WORK:
-        return 25;
-    case SessionType::SHORT_BREAK:
-        return 5;
-    case SessionType::LONG_BREAK:
-        return 15;
-    }
-    return 25;
-}
+
 
 std::string PomodoroSession::get_session_name() const
 {
