@@ -1,14 +1,30 @@
-﻿#include "app.hpp"
+﻿#include "pomodoro_timer.hpp"
+
+#include <iostream>
+#include <thread>
 
 int main()
 {
-    App app;
+    PomodoroTimer timer(10);
 
-    if (!app.init()) {
-        return 1;
+    timer.start();
+
+    while (!timer.is_finished()) {
+        timer.update();
+
+        std::cout
+            << "\rRemaining: "
+            << timer.get_remaining_seconds()
+            << " seconds"
+            << std::flush;
+
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(100)
+        );
     }
 
-    app.run();
+    std::cout << "\nFinished.\n";
+
     return 0;
 }
 // 

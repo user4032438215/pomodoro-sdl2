@@ -21,7 +21,9 @@ package "Core" {
         - duration_sec_ : int
         - accumulated_elapsed_ : steady_clock::duration
         - last_start_at_ : steady_clock::time_point
+        - get_elapsed_duration() : steady_clock::duration
         - state_ : TimerState
+
         + PomodoroTimer(duration_sec : int)
         + start() : void
         + pause() : void
@@ -95,7 +97,6 @@ package "Application" {
         - session_ : PomodoroSession
         - renderer_ : PomodoroRenderer
         - running_ : bool
-
         + App()
         + init() : bool
         + run() : void

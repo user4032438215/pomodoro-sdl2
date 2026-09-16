@@ -1,87 +1,115 @@
 #include "pomodoro_timer.hpp"
 
-using SteadyClock = std::chrono::steady_clock;
+#include <algorithm>
+#include <chrono>
 
 PomodoroTimer::PomodoroTimer(int duration_sec)
     : duration_sec_(duration_sec),
-    paused_elapsed_sec_(0),
+    accumulated_elapsed_(Duration::zero()),
+    last_start_at_{},
     state_(TimerState::IDLE)
 {
+    if (duration_sec_ < 0) {
+        duration_sec_ = 0;
+    }
 }
 
 void PomodoroTimer::start()
 {
+    if (state_ != TimerState::IDLE) {
+        return;
+    }
+
+    accumulated_elapsed_ = Duration::zero();
+    last_start_at_ = Clock::now();
     state_ = TimerState::RUNNING;
-    paused_elapsed_sec_ = 0;
-    started_at_ = SteadyClock::now();
 }
 
 void PomodoroTimer::pause()
 {
-    if (state_ == TimerState::RUNNING) {
-        state_ = TimerState::PAUSED;
-        paused_at_ = SteadyClock::now();
+    if (state_ != TimerState::RUNNING) {
+        return;
     }
+
+    const auto now = Clock::now();
+    accumulated_elapsed_ += now - last_start_at_;
+    state_ = TimerState::PAUSED;
 }
 
 void PomodoroTimer::resume()
 {
-    if (state_ == TimerState::PAUSED) {
-        auto now = SteadyClock::now();
-
-        // 停止していた時間を加算
-        auto paused_duration =
-            std::chrono::duration_cast<std::chrono::seconds>(now - paused_at_);
-
-        paused_elapsed_sec_ += static_cast<int>(paused_duration.count());
-
-        // 再開した瞬間を新しい開始時刻として記録
-        started_at_ = now;
-
-        state_ = TimerState::RUNNING;
+    if (state_ != TimerState::PAUSED) {
+        return;
     }
+
+    last_start_at_ = Clock::now();
+    state_ = TimerState::RUNNING;
 }
 
 void PomodoroTimer::reset(int duration_sec)
 {
-    duration_sec_ = duration_sec;
-    paused_elapsed_sec_ = 0;
+    duration_sec_ = std::max(0, duration_sec);
+    accumulated_elapsed_ = Duration::zero();
+    last_start_at_ = TimePoint{};
     state_ = TimerState::IDLE;
+}
+
+void PomodoroTimer::update()
+{
+    if (state_ != TimerState::RUNNING) {
+        return;
+    }
+
+    if (get_elapsed_duration() >= std::chrono::seconds(duration_sec_)) {
+        const auto now = Clock::now();
+        accumulated_elapsed_ += now - last_start_at_;
+        state_ = TimerState::FINISHED;
+    }
+}
+
+PomodoroTimer::Duration PomodoroTimer::get_elapsed_duration() const
+{
+    if (state_ == TimerState::RUNNING) {
+        return accumulated_elapsed_ + (Clock::now() - last_start_at_);
+    }
+
+    return accumulated_elapsed_;
 }
 
 int PomodoroTimer::get_remaining_seconds() const
 {
-    // まだ開始していない
-    if (state_ == TimerState::IDLE) {
-        return duration_sec_;
-    }
+    const auto elapsed_sec =
+        std::chrono::duration_cast<std::chrono::seconds>(
+            get_elapsed_duration()
+        ).count();
 
-    // 一時停止中は時間を進めない
-    if (state_ == TimerState::PAUSED) {
-        int remaining = duration_sec_ - paused_elapsed_sec_;
-        return remaining > 0 ? remaining : 0;
-    }
+    const auto remaining =
+        static_cast<long long>(duration_sec_) - elapsed_sec;
 
-    // RUNNING のときは「停止時間 + 再開後の経過時間」
-    auto now = SteadyClock::now();
-    auto elapsed_since_start =
-        std::chrono::duration_cast<std::chrono::seconds>(now - started_at_);
-
-    int total_elapsed = paused_elapsed_sec_ + static_cast<int>(elapsed_since_start.count());
-
-    int remaining = duration_sec_ - total_elapsed;
-    return remaining > 0 ? remaining : 0;
+    return static_cast<int>(std::max<long long>(0, remaining));
 }
 
 float PomodoroTimer::get_progress() const
 {
-    int remaining = get_remaining_seconds();
-    return 1.0f - static_cast<float>(remaining) / static_cast<float>(duration_sec_);
+    if (duration_sec_ <= 0) {
+        return 1.0f;
+    }
+
+    const double elapsed_sec =
+        std::chrono::duration<double>(
+            get_elapsed_duration()
+        ).count();
+
+    const double progress = elapsed_sec / duration_sec_;
+
+    return static_cast<float>(
+        std::clamp(progress, 0.0, 1.0)
+        );
 }
 
 bool PomodoroTimer::is_finished() const
 {
-    return get_remaining_seconds() <= 0;
+    return state_ == TimerState::FINISHED;
 }
 
 TimerState PomodoroTimer::get_state() const
