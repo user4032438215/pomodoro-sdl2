@@ -18,7 +18,9 @@ public:
     void render_timer(int remaining_sec, float progress);
     void render_session_name(const std::string& name);
 
-    void render_progress_bar(float progress); //
+    void render_progress_bar(float progress); 
+
+    void render_statet(TimerState state);
 
 
 private:

@@ -19,16 +19,15 @@ package "Core" {
 
     class PomodoroTimer {
         - duration_sec_ : int
-        - started_at_ : steady_clock::time_point
-        - paused_at_ : steady_clock::time_point
-        - paused_elapsed_sec_ : int
+        - accumulated_elapsed_ : steady_clock::duration
+        - last_start_at_ : steady_clock::time_point
         - state_ : TimerState
-
         + PomodoroTimer(duration_sec : int)
         + start() : void
         + pause() : void
         + resume() : void
         + reset(duration_sec : int) : void
+        + update() : void
         + get_remaining_seconds() : int
         + get_progress() : float
         + is_finished() : bool
@@ -44,9 +43,9 @@ package "Core" {
         - current_ : SessionType
 
         + PomodoroSession(long_break_interval : int,
-                          work_minutes : int,
-                          short_break_minutes : int,
-                          long_break_minutes : int)
+        work_minutes : int,
+        short_break_minutes : int,
+        long_break_minutes : int)
         + next() : void
         + reset() : void
         + get_type() : SessionType
@@ -60,7 +59,6 @@ package "Core" {
         - short_break_minutes_ : int
         - long_break_minutes_ : int
         - long_break_interval_ : int
-
         + load(path : string) : bool
         + work_minutes() : int
         + short_break_minutes() : int

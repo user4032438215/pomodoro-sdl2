@@ -4,7 +4,7 @@
 - Windows 10/11
 
 ## 必要なツール
-- Visual Studio 2022
+- Visual Studio 2026
 - CMake
 - vcpkg
 - Git
