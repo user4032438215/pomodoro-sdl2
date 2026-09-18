@@ -4,14 +4,11 @@
 #include <chrono>
 
 PomodoroTimer::PomodoroTimer(int duration_sec)
-    : duration_sec_(duration_sec),
+    : duration_sec_(std::max(1, duration_sec)),
     accumulated_elapsed_(Duration::zero()),
     last_start_at_{},
     state_(TimerState::IDLE)
 {
-    if (duration_sec_ < 0) {
-        duration_sec_ = 0;
-    }
 }
 
 void PomodoroTimer::start()
@@ -48,7 +45,7 @@ void PomodoroTimer::resume()
 
 void PomodoroTimer::reset(int duration_sec)
 {
-    duration_sec_ = std::max(0, duration_sec);
+    duration_sec_ = std::max(1, duration_sec);
     accumulated_elapsed_ = Duration::zero();
     last_start_at_ = TimePoint{};
     state_ = TimerState::IDLE;
@@ -76,24 +73,28 @@ PomodoroTimer::Duration PomodoroTimer::get_elapsed_duration() const
     return accumulated_elapsed_;
 }
 
-int PomodoroTimer::get_remaining_seconds() const
+int PomodoroTimer::get_remaining_seconds() const // 切り上げ処理に変更
 {
-    const auto elapsed_sec =
-        std::chrono::duration_cast<std::chrono::seconds>(
-            get_elapsed_duration()
-        ).count();
+    const auto elapsed = get_elapsed_duration();
+    const auto total = std::chrono::seconds(duration_sec_);
+
+    if (elapsed >= total) {
+        return 0;
+    }
 
     const auto remaining =
-        static_cast<long long>(duration_sec_) - elapsed_sec;
+        std::chrono::ceil<std::chrono::seconds>(
+            total - elapsed
+        );
 
-    return static_cast<int>(std::max<long long>(0, remaining));
+    return static_cast<int>(remaining.count());
 }
 
 float PomodoroTimer::get_progress() const
 {
-    if (duration_sec_ <= 0) {
-        return 1.0f;
-    }
+    //if (duration_sec_ <= 0) {
+    //    return 1.0f;
+    //}
 
     const double elapsed_sec =
         std::chrono::duration<double>(

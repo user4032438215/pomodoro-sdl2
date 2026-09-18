@@ -36,12 +36,14 @@ bool PomodoroRenderer::init(const std::string& title, int width, int height)
 
     if (!window_) {
         std::cerr << "SDL_CreateWindow Error: " << SDL_GetError() << "\n";
+        shutdown();
         return false;
     }
 
     renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
     if (!renderer_) {
         std::cerr << "SDL_CreateRenderer Error: " << SDL_GetError() << "\n";
+        shutdown();
         return false;
     }
 
@@ -49,6 +51,7 @@ bool PomodoroRenderer::init(const std::string& title, int width, int height)
     font_ = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 32);
     if (!font_) {
         std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << "\n";
+        shutdown();
         return false;
     }
 
@@ -146,3 +149,22 @@ void PomodoroRenderer::render_progress_bar(float progress) //
     SDL_SetRenderDrawColor(renderer_, 0, 200, 0, 255);
     SDL_RenderFillRect(renderer_, &fg);
 }
+
+// 将来的に実装
+//std::string format_time(int remaining_sec)
+//{
+//    const int minutes = remaining_sec / 60;
+//    const int seconds = remaining_sec % 60;
+//
+//    char buffer[16];
+//
+//    std::snprintf(
+//        buffer,
+//        sizeof(buffer),
+//        "%02d:%02d",
+//        minutes,
+//        seconds
+//    );
+//
+//    return buffer;
+//}

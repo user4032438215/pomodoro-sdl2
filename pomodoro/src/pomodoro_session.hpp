@@ -1,5 +1,11 @@
 #pragma once
+#include "settings.hpp"
 #include <string>
+
+/// <summary>
+/// PomodoroSessionが管理するのは、
+/// 現在のセッション種別 と作業セッションの完了回数 の 2種のみ
+/// </summary>
 
 enum class SessionType {
     WORK,
@@ -9,32 +15,25 @@ enum class SessionType {
 
 class PomodoroSession {
 public:
-    PomodoroSession(
-        int long_break_interval,
-        int work_minutes,
-        int short_break_minutes,
-        int long_break_minutes
-    );
+    explicit PomodoroSession(const Settings& settings);
 
     void next();
     void reset();
 
-    SessionType get_type() const;
+    SessionType get_type() const noexcept;
     int get_duration_minutes() const;
     std::string get_session_name() const;
 
     bool should_take_long_break() const;
 
+    int completed_work_sessions() const noexcept; //代わりに追加
+
 private:
-    int completed_work_sessions_;
-    int long_break_interval_;
-    
+    // ☆ 設定値のコピーを持たない
+    const Settings& settings_;
 
-    // ★追加
-    int work_minutes_;            
-    int short_break_minutes_;     
-    int long_break_minutes_;      
-
-    SessionType current_;
+    // ☆ これらはセッションの状態
+    int completed_work_sessions_{ 0 };
+    SessionType current_{ SessionType::WORK };
 
 };

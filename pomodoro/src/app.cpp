@@ -1,100 +1,164 @@
 #include "app.hpp"
+#include <iostream>
 #include <SDL2/SDL.h>
 
 App::App()
-    : timer_(0),                    // ← 設定読み込み後に値を入れる
-    session_(4, 25, 5, 15),       // ← 仮の初期値（init()で上書き）
+    : settings_(),
+    session_(settings_),
+    timer_(1),
+    renderer_(),
     running_(true)
 {
 }
 
 bool App::init()
 {
-    
+    std::cout << "[App] Loading settings...\n";
+
     if (!settings_.load("settings.json")) {
+        std::cerr << "[App] Failed to load settings.json\n";
         return false;
     }
 
-    // ← 設定値で Session を初期化
-    session_ = PomodoroSession(
-        settings_.long_break_interval(),
-        settings_.work_minutes(),
-        settings_.short_break_minutes(),
-        settings_.long_break_minutes()
-    );
+    std::cout << "[App] Settings loaded\n";
 
-    // ← 設定値で Timer を初期化
-    timer_.reset(settings_.work_minutes() * 60);
+    if (!settings_.validate()) {
+        std::cerr << "[App] Settings validation failed\n";
+        return false;
+    }
 
-    return renderer_.init("Pomodoro", 640, 480);
+    std::cout << "[App] Settings validated\n";
+
+    start_current_session();
+
+    std::cout << "[App] Initializing renderer...\n";
+
+    if (!renderer_.init("Pomodoro", 640, 480)) {
+        std::cerr << "[App] Renderer initialization failed\n";
+        return false;
+    }
+
+    std::cout << "[App] Initialization completed\n";
+    return true;
 }
 
 void App::run()
 {
+    // ☆ 初期状態はIDLEなので、ここで開始する
     timer_.start();
 
     while (running_) {
+        handle_events();
 
-        handle_events();   // ★追加：イベント処理を分離
+        // ☆ RUNNING中の時間切れをFINISHEDへ反映する
+        timer_.update();
 
-        renderer_.clear();
+        // ☆ 終了していれば次のセッションへ進める
+        update();
 
-        renderer_.render_session_name(session_.get_session_name());
-        renderer_.render_timer(timer_.get_remaining_seconds(), timer_.get_progress());
-        renderer_.render_progress_bar(timer_.get_progress());
+        // ☆ 現在の状態を描画する
+        render();
 
-        renderer_.present();
-
-        if (timer_.is_finished()) {
-            session_.next();
-            timer_.reset(session_.get_duration_minutes() * 60);
-            timer_.start();
-        }
-
+        // 約60FPS
         SDL_Delay(16);
     }
 
     renderer_.shutdown();
 }
 
-
 void App::handle_events()
 {
-    SDL_Event event;
+    SDL_Event event{};
 
+    // SDL_PollEventは保留中のイベントを1つずつ取り出します。
+    // すべてのイベントを処理するためwhileで呼び出します。[127]
     while (SDL_PollEvent(&event)) {
-
         if (event.type == SDL_QUIT) {
             running_ = false;
+            continue;
         }
 
-        if (event.type == SDL_KEYDOWN) {
-            switch (event.key.keysym.sym) {
+        if (event.type != SDL_KEYDOWN) {
+            continue;
+        }
 
-            case SDLK_ESCAPE:
-                running_ = false;
-                break;
+        // キーリピートによる連続処理を避ける
+        if (event.key.repeat != 0) {
+            continue;
+        }
 
-            case SDLK_SPACE:
-                if (timer_.get_state() == TimerState::RUNNING) {
-                    timer_.pause();        // ★一時停止
-                }
-                else if (timer_.get_state() == TimerState::PAUSED) {
-                    timer_.resume();       // ★再開
-                }
-                break;
+        switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+            running_ = false;
+            break;
 
-            case SDLK_r:
-                timer_.reset(session_.get_duration_minutes() * 60); // ★リセット
-                timer_.start();
-                break;
-
-            case SDLK_n:
-                session_.next();          // ★次のセッションへ
-                timer_.reset(session_.get_duration_minutes() * 60);
-                timer_.start();
-                break;
+        case SDLK_SPACE:
+            if (timer_.get_state() == TimerState::RUNNING) {
+                timer_.pause();
             }
+            else if (timer_.get_state() == TimerState::PAUSED) {
+                timer_.resume();
+            }
+            break;
+
+        case SDLK_r:
+            // ☆ 現在のセッションを最初からやり直す
+            timer_.reset(
+                session_.get_duration_minutes() * 60
+            );
+            timer_.start();
+            break;
+
+        case SDLK_n:
+            // ☆ 現在のセッションを途中で終了して次へ進む
+            session_.next();
+            start_current_session();
+            break;
+
+        default:
+            break;
         }
     }
+}
+
+void App::update()
+{
+    if (!timer_.is_finished()) {
+        return;
+    }
+
+    // ☆ WORK終了、休憩終了などの状態遷移はSessionに任せる
+    session_.next();
+
+    // ☆ 次のセッションをTimerへ設定する
+    start_current_session();
+}
+
+void App::render()
+{
+    renderer_.clear();
+
+    renderer_.render_session_name(
+        session_.get_session_name()
+    );
+
+    renderer_.render_timer(
+        timer_.get_remaining_seconds(),
+        timer_.get_progress()
+    );
+
+    renderer_.render_progress_bar(
+        timer_.get_progress()
+    );
+
+    renderer_.present();
+}
+
+void App::start_current_session()
+{
+    const int duration_seconds =
+        session_.get_duration_minutes() * 60;
+
+    timer_.reset(duration_seconds);
+    timer_.start();
 }

@@ -1,4 +1,7 @@
 #pragma once
+
+#include "pomodoro_timer.hpp"
+
 #include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -20,7 +23,7 @@ public:
 
     void render_progress_bar(float progress); 
 
-    void render_statet(TimerState state);
+    //void render_state(TimerState state);
 
 
 private:

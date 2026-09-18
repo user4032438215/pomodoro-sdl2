@@ -1,39 +1,30 @@
 #include "pomodoro_session.hpp"
 
-#include <algorithm>
-#include <cassert>
+//#include <algorithm>
+//#include <cassert>
 #include <stdexcept>
 
-PomodoroSession::PomodoroSession(
-    int long_break_interval,
-    int work_minutes,
-    int short_break_minutes,
-    int long_break_minutes
-)
-    : completed_work_sessions_(0),
-    long_break_interval_(std::max(1, long_break_interval)),
-    work_minutes_(std::max(1, work_minutes)),
-    short_break_minutes_(std::max(1, short_break_minutes)),
-    long_break_minutes_(std::max(1, long_break_minutes)),
-    current_(SessionType::WORK)
+PomodoroSession::PomodoroSession(const Settings& settings)
+    : settings_(settings)
 {
 }
+
 
 int PomodoroSession::get_duration_minutes() const
 {
     switch (current_) {
     case SessionType::WORK:
-        return work_minutes_;
+        return settings_.work_minutes();
 
     case SessionType::SHORT_BREAK:
-        return short_break_minutes_;
+        return settings_.short_break_minutes();
 
     case SessionType::LONG_BREAK:
-        return long_break_minutes_;
-    }
+        return settings_.long_break_minutes();
 
-    assert(false && "Unknown SessionType");
-    throw std::logic_error("Unknown SessionType");
+    default:
+        throw std::logic_error("Unknown SessionType");
+    }
 }
 
 std::string PomodoroSession::get_session_name() const
@@ -47,16 +38,16 @@ std::string PomodoroSession::get_session_name() const
 
     case SessionType::LONG_BREAK:
         return "Long Break";
-    }
 
-    assert(false && "Unknown SessionType");
-    throw std::logic_error("Unknown SessionType");
+    default:
+        throw std::logic_error("Unknown SessionType"); //不正値
+    }
 }
 
 bool PomodoroSession::should_take_long_break() const
 {
-    return completed_work_sessions_ > 0
-        && completed_work_sessions_ % long_break_interval_ == 0;
+    return completed_work_sessions_ > 0 &&
+           completed_work_sessions_ % settings_.long_break_interval() == 0;
 }
 
 void PomodoroSession::next()
@@ -80,7 +71,13 @@ void PomodoroSession::reset()
     current_ = SessionType::WORK;
 }
 
-SessionType PomodoroSession::get_type() const
+SessionType PomodoroSession::get_type() const noexcept
 {
     return current_;
+}
+
+
+int PomodoroSession::completed_work_sessions() const noexcept
+{
+    return completed_work_sessions_;
 }
