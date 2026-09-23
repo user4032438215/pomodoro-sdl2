@@ -2,6 +2,8 @@
 #include "pomodoro_timer.hpp"
 #include "settings.hpp"
 
+//#include "app.hpp"
+
 #include <cassert>
 #include <chrono>
 #include <cmath>
@@ -261,6 +263,46 @@ namespace
 
         std::cout << "[PASS] timer progress\n";
     }
+
+    //added
+    void test_timer_initial_state_does_not_count_down()
+    {
+        PomodoroTimer timer(2);
+
+        // Arrange
+        assert(timer.get_state() == TimerState::IDLE);
+        assert(timer.get_remaining_seconds() == 2);
+        assert(timer.get_progress() == 0.0f);
+
+        // Act
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(1100)
+        );
+
+        // Assert
+        assert(timer.get_state() == TimerState::IDLE);
+        assert(timer.get_remaining_seconds() == 2);
+        assert(timer.get_progress() == 0.0f);
+
+        std::cout
+            << "[PASS] idle timer does not count down\n";
+    }
+
+    //void test_app_initial_state()
+    //{
+    //    App app;
+
+    //    assert(app.init());
+
+    //    assert(app.timer_state() == TimerState::IDLE);
+    //    assert(app.session_type() == SessionType::WORK);
+    //    assert(app.remaining_seconds() == 25 * 60);
+    //    assert(app.progress() == 0.0f);
+
+    //    std::cout << "[PASS] app initial state\n";
+    //}
+
+
 }
 
 int main()
@@ -273,6 +315,10 @@ int main()
     test_session_reset();
 
     test_timer_initial_state();
+
+    //added
+    test_timer_initial_state_does_not_count_down();
+
     test_timer_start_and_finish();
     test_timer_pause();
     test_timer_resume();

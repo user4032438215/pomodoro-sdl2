@@ -29,7 +29,8 @@ bool App::init()
 
     std::cout << "[App] Settings validated\n";
 
-    start_current_session();
+    //start_current_session();
+    reset_current_timer();
 
     std::cout << "[App] Initializing renderer...\n";
 
@@ -44,8 +45,8 @@ bool App::init()
 
 void App::run()
 {
-    // ☆ 初期状態はIDLEなので、ここで開始する
-    timer_.start();
+    
+    //timer_.start();
 
     while (running_) {
         handle_events();
@@ -92,8 +93,20 @@ void App::handle_events()
             running_ = false;
             break;
 
+        //case SDLK_SPACE:
+        //    if (timer_.get_state() == TimerState::RUNNING) {
+        //        timer_.pause();
+        //    }
+        //    else if (timer_.get_state() == TimerState::PAUSED) {
+        //        timer_.resume();
+        //    }
+        //    break;
+
         case SDLK_SPACE:
-            if (timer_.get_state() == TimerState::RUNNING) {
+            if (timer_.get_state() == TimerState::IDLE) {
+                timer_.start();
+            }
+            else if (timer_.get_state() == TimerState::RUNNING) {
                 timer_.pause();
             }
             else if (timer_.get_state() == TimerState::PAUSED) {
@@ -130,8 +143,8 @@ void App::update()
     // ☆ WORK終了、休憩終了などの状態遷移はSessionに任せる
     session_.next();
 
-    // ☆ 次のセッションをTimerへ設定する
-    start_current_session();
+    // ☆ 次のセッションを設定するだけ
+    reset_current_timer();
 }
 
 void App::render()
@@ -161,4 +174,42 @@ void App::start_current_session()
 
     timer_.reset(duration_seconds);
     timer_.start();
+}
+
+void App::reset_current_timer()
+{
+    const int duration_seconds =
+        session_.get_duration_minutes() * 60;
+
+    timer_.reset(duration_seconds);
+
+    // ☆ start()を呼ばない
+}
+
+void App::start_current_timer()
+{
+    if (timer_.get_state() == TimerState::IDLE) {
+        timer_.start();
+    }
+}
+
+//added for tests
+TimerState App::timer_state() const noexcept
+{
+    return timer_.get_state();
+}
+
+SessionType App::session_type() const noexcept
+{
+    return session_.get_type();
+}
+
+int App::remaining_seconds() const
+{
+    return timer_.get_remaining_seconds();
+}
+
+float App::progress() const
+{
+    return timer_.get_progress();
 }

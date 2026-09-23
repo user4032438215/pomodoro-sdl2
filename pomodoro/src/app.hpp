@@ -12,11 +12,19 @@ public:
     bool init();
     void run();
 
+    //added for tests
+    TimerState timer_state() const noexcept;
+    SessionType session_type() const noexcept;
+    int remaining_seconds() const;
+    float progress() const;
+
 private:
     void handle_events();
     void update();
     void render();
     void start_current_session();
+    void reset_current_timer();
+    void start_current_timer();
 
     // ☆ settings_を最初に宣言する
     // PomodoroSessionがSettingsを参照するため

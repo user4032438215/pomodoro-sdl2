@@ -46,9 +46,12 @@ enable_testing()
 
 add_executable(pomodoro_tests
     tests/timer_session_tests.cpp
+
+    src/app.cpp
     src/pomodoro_timer.cpp
     src/pomodoro_session.cpp
     src/settings.cpp
+    src/pomodoro_renderer.cpp
 )
 
 target_include_directories(pomodoro_tests PRIVATE
@@ -56,6 +59,9 @@ target_include_directories(pomodoro_tests PRIVATE
 )
 
 target_link_libraries(pomodoro_tests PRIVATE
+    SDL2::SDL2
+    SDL2::SDL2main
+    SDL2_ttf::SDL2_ttf
     nlohmann_json::nlohmann_json
 )
 
