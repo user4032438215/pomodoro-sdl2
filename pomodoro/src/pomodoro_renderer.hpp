@@ -1,3 +1,4 @@
+// pomodoro_renderer.hpp
 #pragma once
 
 #include "pomodoro_timer.hpp"
@@ -11,22 +12,47 @@ public:
     PomodoroRenderer();
     ~PomodoroRenderer();
 
-    bool init(const std::string& title, int width, int height);
+    bool init(
+        const std::string& title,
+        int width,
+        int height
+    );
+
     void shutdown();
 
     void clear();
-    void render_text(const std::string& text, int x, int y);
+    //void render_text(const std::string& text, int x, int y);
     void present();
 
-    void render_timer(int remaining_sec, float progress);
-    void render_session_name(const std::string& name);
+    void render_timer(
+        int remaining_sec, 
+        float progress
+    );
 
-    void render_progress_bar(float progress); 
+    void render_session_name(
+        const std::string& name
+    );
+
+    void render_progress_bar(
+        float progress
+    ); 
 
     //void render_state(TimerState state);
 
 
 private:
+
+    // ☆ 表示専用の変換
+    std::string format_time(
+        int remaining_sec
+    ) const;
+
+    void render_text(
+        const std::string& text,
+        int x,
+        int y
+    );
+
     SDL_Window* window_;
     SDL_Renderer* renderer_;
     TTF_Font* font_;

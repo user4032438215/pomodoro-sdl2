@@ -1,4 +1,8 @@
+// pomodoro_renderer.cpp
 #include "pomodoro_renderer.hpp"
+
+#include <algorithm>
+#include <cstdio>
 #include <iostream>
 
 PomodoroRenderer::PomodoroRenderer()
@@ -110,10 +114,27 @@ void PomodoroRenderer::present()
     SDL_RenderPresent(renderer_);
 }
 
+//
 void PomodoroRenderer::render_timer(int remaining_sec, float progress)
 {
-    render_text("Time: " + std::to_string(remaining_sec) + " sec", 50, 120);
-    render_text("Progress: " + std::to_string(static_cast<int>(progress * 100)) + "%", 50, 170);
+    {
+        render_text(
+            format_time(remaining_sec),
+            220,
+            180
+        );
+
+        const int percent =
+            static_cast<int>(progress * 100.0f);
+
+        render_text(
+            "Progress: " +
+            std::to_string(percent) +
+            "%",
+            220,
+            230
+        );
+    }
 }
 
 void PomodoroRenderer::render_session_name(const std::string& name)
@@ -150,21 +171,31 @@ void PomodoroRenderer::render_progress_bar(float progress) //
     SDL_RenderFillRect(renderer_, &fg);
 }
 
-// 将来的に実装
-//std::string format_time(int remaining_sec)
-//{
-//    const int minutes = remaining_sec / 60;
-//    const int seconds = remaining_sec % 60;
-//
-//    char buffer[16];
-//
-//    std::snprintf(
-//        buffer,
-//        sizeof(buffer),
-//        "%02d:%02d",
-//        minutes,
-//        seconds
-//    );
-//
-//    return buffer;
-//}
+
+//added SSSS to MM:SS
+std::string PomodoroRenderer::format_time(
+    int remaining_sec
+) const
+{
+    // ☆ 念のため負数を0として扱う
+    const int safe_seconds =
+        std::max(0, remaining_sec);
+
+    const int minutes =
+        safe_seconds / 60;
+
+    const int seconds =
+        safe_seconds % 60;
+
+    char buffer[16]{};
+
+    std::snprintf(
+        buffer,
+        sizeof(buffer),
+        "%02d:%02d",
+        minutes,
+        seconds
+    );
+
+    return std::string(buffer);
+}
