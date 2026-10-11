@@ -171,6 +171,41 @@ void PomodoroRenderer::render_progress_bar(float progress) //
     SDL_RenderFillRect(renderer_, &fg);
 }
 
+void PomodoroRenderer::render_button(
+    const SDL_Rect& bounds,
+    const std::string& label
+)
+{
+    // ☆ ボタンの背景
+    SDL_SetRenderDrawColor(
+        renderer_,
+        31, 31, 31, 255
+    );
+
+    SDL_RenderFillRect(
+        renderer_,
+        &bounds
+    );
+
+    // ☆ ボタンの枠
+    SDL_SetRenderDrawColor(
+        renderer_,
+        80, 80, 80, 255
+    );
+
+    SDL_RenderDrawRect(
+        renderer_,
+        &bounds
+    );
+
+    // ☆ 文字
+    render_text(
+        label,
+        bounds.x + 20,
+        bounds.y + 10
+    );
+}
+
 
 //added SSSS to MM:SS
 std::string PomodoroRenderer::format_time(

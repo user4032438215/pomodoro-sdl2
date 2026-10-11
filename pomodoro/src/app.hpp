@@ -5,6 +5,8 @@
 #include "pomodoro_renderer.hpp"
 #include "settings.hpp"
 
+#include <SDL2/SDL.h> // added
+
 class App {
 public:
     App();
@@ -18,10 +20,22 @@ public:
     int remaining_seconds() const;
     float progress() const;
 
+
+    //added
+    std::string button_label() const;
+
 private:
     void handle_events();
     void update();
     void render();
+
+    //added
+    bool is_inside(
+        const SDL_Rect& rect,
+        int x,
+        int y
+    ) const;
+
     void start_current_session();
     void reset_current_timer();
     void start_current_timer();
@@ -32,9 +46,11 @@ private:
 
     // ☆ Settingsを参照する構成
     PomodoroSession session_;
-
     PomodoroTimer timer_;
     PomodoroRenderer renderer_;
 
     bool running_{ true };
+
+    //added button size and coordinate
+    SDL_Rect start_button_{ 270, 330, 100, 40 };
 };

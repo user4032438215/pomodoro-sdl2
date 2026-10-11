@@ -79,6 +79,29 @@ void App::handle_events()
             continue;
         }
 
+
+        // ☆ マウスの左クリック
+        if (event.type == SDL_MOUSEBUTTONDOWN &&
+            event.button.button == SDL_BUTTON_LEFT)
+        {
+            const int x = event.button.x;
+            const int y = event.button.y;
+
+            if (is_inside(start_button_, x, y)) {
+                if (timer_.get_state() == TimerState::IDLE) {
+                    timer_.start();
+                }
+                else if (timer_.get_state() == TimerState::RUNNING) {
+                    timer_.pause();
+                }
+                else if (timer_.get_state() == TimerState::PAUSED) {
+                    timer_.resume();
+                }
+            }
+
+            continue;
+        }
+
         if (event.type != SDL_KEYDOWN) {
             continue;
         }
@@ -93,15 +116,6 @@ void App::handle_events()
             running_ = false;
             break;
 
-        //case SDLK_SPACE:
-        //    if (timer_.get_state() == TimerState::RUNNING) {
-        //        timer_.pause();
-        //    }
-        //    else if (timer_.get_state() == TimerState::PAUSED) {
-        //        timer_.resume();
-        //    }
-        //    break;
-
         case SDLK_SPACE:
             if (timer_.get_state() == TimerState::IDLE) {
                 timer_.start();
@@ -114,7 +128,13 @@ void App::handle_events()
             }
             break;
 
+
         case SDLK_r:
+            reset_current_timer();
+            break;
+
+            /*
+                   case SDLK_r:
             // ☆ 現在のセッションを最初からやり直す
             timer_.reset(
                 session_.get_duration_minutes() * 60
@@ -122,12 +142,14 @@ void App::handle_events()
             timer_.start();
             break;
 
-        case SDLK_n:
+                    case SDLK_n:
             // ☆ 現在のセッションを途中で終了して次へ進む
             session_.next();
             start_current_session();
             break;
 
+            */
+ 
         default:
             break;
         }
@@ -164,7 +186,37 @@ void App::render()
         timer_.get_progress()
     );
 
+    // ☆ STARTボタンを描く
+    renderer_.render_button(
+        start_button_,
+        button_label()
+    );
+
     renderer_.present();
+}
+
+
+/*
+added
+マウスのxが、ボタンの左端以上
+かつ
+マウスのxが、ボタンの右端より小さい
+かつ
+マウスのyが、ボタンの上端以上
+かつ
+マウスのyが、ボタンの下端より小さい
+*/
+bool App::is_inside(
+    const SDL_Rect& rect,
+    int x,
+    int y
+) const
+{
+    return
+        x >= rect.x &&
+        x < rect.x + rect.w &&
+        y >= rect.y &&
+        y < rect.y + rect.h;
 }
 
 void App::start_current_session()
@@ -212,4 +264,21 @@ int App::remaining_seconds() const
 float App::progress() const
 {
     return timer_.get_progress();
+}
+
+std::string App::button_label() const
+{
+    switch (timer_.get_state()) {
+    case TimerState::IDLE:
+        return "START";
+
+    case TimerState::RUNNING:
+        return "PAUSE";
+
+    case TimerState::PAUSED:
+        return "RESUME";
+
+    default:
+        return "START";
+    }
 }

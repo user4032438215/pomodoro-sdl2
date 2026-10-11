@@ -24,6 +24,8 @@ public:
     //void render_text(const std::string& text, int x, int y);
     void present();
 
+
+
     void render_timer(
         int remaining_sec, 
         float progress
@@ -36,6 +38,13 @@ public:
     void render_progress_bar(
         float progress
     ); 
+
+    //added
+    void render_button(
+        const SDL_Rect& bounds,
+        const std::string& label
+    );
+
 
     //void render_state(TimerState state);
 
