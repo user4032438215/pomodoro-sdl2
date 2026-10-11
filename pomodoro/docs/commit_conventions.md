@@ -1,4 +1,4 @@
-d# Commit Message Conventions
+sud# Commit Message Conventions
 
 ## Prefix
 - feat: 新機能
