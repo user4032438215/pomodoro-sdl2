@@ -26,3 +26,5 @@
 セッション終了:
     session_.next()
     reset_current_timer()
+
+## button 関係のメンバは 継承とか使った方 可読性、再利用性、保守性が増す可能性がある。

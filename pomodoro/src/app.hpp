@@ -53,4 +53,5 @@ private:
 
     //added button size and coordinate
     SDL_Rect start_button_{ 270, 330, 100, 40 };
+    SDL_Rect reset_button_{ 150, 330, 100, 40 };
 };

@@ -80,7 +80,7 @@ void App::handle_events()
         }
 
 
-        // ☆ マウスの左クリック
+        //added button events
         if (event.type == SDL_MOUSEBUTTONDOWN &&
             event.button.button == SDL_BUTTON_LEFT)
         {
@@ -99,8 +99,15 @@ void App::handle_events()
                 }
             }
 
+            // added 1012
+            if (is_inside(reset_button_, x, y)) {
+                reset_current_timer();
+            }
+
             continue;
         }
+
+
 
         if (event.type != SDL_KEYDOWN) {
             continue;
@@ -186,10 +193,15 @@ void App::render()
         timer_.get_progress()
     );
 
-    // ☆ STARTボタンを描く
+    // button
     renderer_.render_button(
         start_button_,
         button_label()
+    );
+
+    renderer_.render_button(
+        reset_button_,
+        "RESET"
     );
 
     renderer_.present();
@@ -234,8 +246,6 @@ void App::reset_current_timer()
         session_.get_duration_minutes() * 60;
 
     timer_.reset(duration_seconds);
-
-    // ☆ start()を呼ばない
 }
 
 void App::start_current_timer()
