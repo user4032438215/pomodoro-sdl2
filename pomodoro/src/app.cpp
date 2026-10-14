@@ -67,6 +67,7 @@ void App::run()
     renderer_.shutdown();
 }
 
+/*
 void App::handle_events()
 {
     SDL_Event event{};
@@ -140,28 +141,104 @@ void App::handle_events()
             reset_current_timer();
             break;
 
-            /*
-                   case SDLK_r:
-            // ☆ 現在のセッションを最初からやり直す
-            timer_.reset(
-                session_.get_duration_minutes() * 60
-            );
-            timer_.start();
-            break;
 
-                    case SDLK_n:
-            // ☆ 現在のセッションを途中で終了して次へ進む
-            session_.next();
-            start_current_session();
-            break;
 
-            */
- 
         default:
             break;
         }
     }
 }
+*/
+
+//updated handle_events()
+void App::handle_events()
+{
+    SDL_Event event{};
+
+    while (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            running_ = false;
+            continue;
+        }
+
+        if (event.type == SDL_MOUSEBUTTONDOWN &&
+            event.button.button == SDL_BUTTON_LEFT)
+        {
+            const int x = event.button.x;
+            const int y = event.button.y;
+
+            // Timer画面のとき
+            if (screen_ == AppScreen::TIMER) {
+                if (is_inside(start_button_, x, y)) {
+                    if (timer_.get_state() == TimerState::IDLE) {
+                        timer_.start();
+                    }
+                    else if (timer_.get_state() == TimerState::RUNNING) {
+                        timer_.pause();
+                    }
+                    else if (timer_.get_state() == TimerState::PAUSED) {
+                        timer_.resume();
+                    }
+                }
+
+                if (is_inside(reset_button_, x, y)) {
+                    reset_current_timer();
+                }
+
+                if (is_inside(settings_button_, x, y)) {
+                    screen_ = AppScreen::SETTINGS;
+                }
+            }
+
+            // Settings画面のとき
+            else if (screen_ == AppScreen::SETTINGS) {
+                if (is_inside(back_button_, x, y)) {
+                    screen_ = AppScreen::TIMER;
+                }
+            }
+
+            continue;
+        }
+
+        if (event.type != SDL_KEYDOWN) {
+            continue;
+        }
+
+        if (event.key.repeat != 0) {
+            continue;
+        }
+
+        switch (event.key.keysym.sym) {
+        case SDLK_ESCAPE:
+            running_ = false;
+            break;
+
+        case SDLK_SPACE:
+            if (screen_ == AppScreen::TIMER) {
+                if (timer_.get_state() == TimerState::IDLE) {
+                    timer_.start();
+                }
+                else if (timer_.get_state() == TimerState::RUNNING) {
+                    timer_.pause();
+                }
+                else if (timer_.get_state() == TimerState::PAUSED) {
+                    timer_.resume();
+                }
+            }
+            break;
+
+        case SDLK_r:
+            if (screen_ == AppScreen::TIMER) {
+                reset_current_timer();
+            }
+            break;
+
+        default:
+            break;
+        }
+    }
+}
+
 
 void App::update()
 {
@@ -176,6 +253,7 @@ void App::update()
     reset_current_timer();
 }
 
+/*
 void App::render()
 {
     renderer_.clear();
@@ -206,7 +284,91 @@ void App::render()
 
     renderer_.present();
 }
+*/
 
+//updated render()
+void App::render()
+{
+    renderer_.clear();
+
+    if (screen_ == AppScreen::TIMER) {
+        render_timer_screen();
+    }
+    else if (screen_ == AppScreen::SETTINGS) {
+        render_settings_screen();
+    }
+
+    renderer_.present();
+}
+
+void App::render_timer_screen()
+{
+    renderer_.render_session_name(
+        session_.get_session_name()
+    );
+
+    renderer_.render_timer(
+        timer_.get_remaining_seconds(),
+        timer_.get_progress()
+    );
+
+    renderer_.render_progress_bar(
+        timer_.get_progress()
+    );
+
+    renderer_.render_button(
+        reset_button_,
+        "RESET"
+    );
+
+    renderer_.render_button(
+        start_button_,
+        button_label()
+    );
+
+    renderer_.render_button(
+        settings_button_,
+        "SETTINGS"
+    );
+}
+
+void App::render_settings_screen()
+{
+    renderer_.render_text(
+        "Settings",
+        270,
+        80
+    );
+
+    renderer_.render_text(
+        "Work: 25 min",
+        220,
+        160
+    );
+
+    renderer_.render_text(
+        "Short Break: 5 min",
+        220,
+        200
+    );
+
+    renderer_.render_text(
+        "Long Break: 15 min",
+        220,
+        240
+    );
+
+    renderer_.render_text(
+        "Long Break Interval: 4",
+        220,
+        280
+    );
+
+    renderer_.render_button(
+        back_button_,
+        "BACK"
+    );
+}
 
 /*
 added

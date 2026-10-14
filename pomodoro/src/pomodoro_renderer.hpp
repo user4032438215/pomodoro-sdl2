@@ -45,6 +45,11 @@ public:
         const std::string& label
     );
 
+    void render_text(
+        const std::string& text,
+        int x,
+        int y
+    );
 
     //void render_state(TimerState state);
 
@@ -56,11 +61,7 @@ private:
         int remaining_sec
     ) const;
 
-    void render_text(
-        const std::string& text,
-        int x,
-        int y
-    );
+
 
     SDL_Window* window_;
     SDL_Renderer* renderer_;

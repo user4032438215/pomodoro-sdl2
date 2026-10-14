@@ -5,7 +5,14 @@
 #include "pomodoro_renderer.hpp"
 #include "settings.hpp"
 
-#include <SDL2/SDL.h> // added
+#include <SDL2/SDL.h> 
+
+//added
+enum class AppScreen
+{
+    TIMER,
+    SETTINGS
+};
 
 class App {
 public:
@@ -27,7 +34,11 @@ public:
 private:
     void handle_events();
     void update();
-    void render();
+    void render(); // updated
+
+    //added
+    void render_timer_screen();
+    void render_settings_screen();
 
     //added
     bool is_inside(
@@ -54,4 +65,10 @@ private:
     //added button size and coordinate
     SDL_Rect start_button_{ 270, 330, 100, 40 };
     SDL_Rect reset_button_{ 150, 330, 100, 40 };
+    SDL_Rect settings_button_{ 390, 330, 100, 40 };
+
+    SDL_Rect back_button_{ 270, 400, 100, 40 };
+
+    //added
+    AppScreen screen_{ AppScreen::TIMER };
 };

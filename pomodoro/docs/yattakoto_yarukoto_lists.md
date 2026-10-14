@@ -103,3 +103,16 @@ IDLEに戻す
 
 6. コミット
 feat: add current session reset control
+---261012 1612 メインボタン、リセットボタンの実装は完了（表示はずれてるけど後回しで）
+
+---261114 2011 
+1. Timer画面とSettings画面を切り替えられる
+2. SETTINGSボタンを押すと設定画面になる
+3. 戻るボタンを押すとTimer画面に戻る
+4. 設定値はまだ変更しない
+変更したファイル
+src/app.hpp enum を app class 内に宣言しない理由：「アプリ全体の画面種別」だから TimerやRenderer専用ではないから
+src/app.cpp
+src/pomodoro_renderer.hpp
+src/pomodoro_renderer.cpp
+コミット
