@@ -30,8 +30,9 @@ target_link_libraries(pomodoro PRIVATE
     nlohmann_json::nlohmann_json
 )
 
+# settings.jsonを実行ファイルと同じフォルダへコピーする
 configure_file(
-    ${CMAKE_SOURCE_DIR}/settings.json
+    ${CMAKE_CURRENT_SOURCE_DIR}/settings.json
     ${CMAKE_BINARY_DIR}/settings.json
     COPYONLY
 )

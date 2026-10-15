@@ -1,3 +1,4 @@
+//app.cpp
 #include "app.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -66,89 +67,6 @@ void App::run()
 
     renderer_.shutdown();
 }
-
-/*
-void App::handle_events()
-{
-    SDL_Event event{};
-
-    // SDL_PollEventは保留中のイベントを1つずつ取り出します。
-    // すべてのイベントを処理するためwhileで呼び出します。[127]
-    while (SDL_PollEvent(&event)) {
-        if (event.type == SDL_QUIT) {
-            running_ = false;
-            continue;
-        }
-
-
-        //added button events
-        if (event.type == SDL_MOUSEBUTTONDOWN &&
-            event.button.button == SDL_BUTTON_LEFT)
-        {
-            const int x = event.button.x;
-            const int y = event.button.y;
-
-            if (is_inside(start_button_, x, y)) {
-                if (timer_.get_state() == TimerState::IDLE) {
-                    timer_.start();
-                }
-                else if (timer_.get_state() == TimerState::RUNNING) {
-                    timer_.pause();
-                }
-                else if (timer_.get_state() == TimerState::PAUSED) {
-                    timer_.resume();
-                }
-            }
-
-            // added 1012
-            if (is_inside(reset_button_, x, y)) {
-                reset_current_timer();
-            }
-
-            continue;
-        }
-
-
-
-        if (event.type != SDL_KEYDOWN) {
-            continue;
-        }
-
-        // キーリピートによる連続処理を避ける
-        if (event.key.repeat != 0) {
-            continue;
-        }
-
-        switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
-            running_ = false;
-            break;
-
-        case SDLK_SPACE:
-            if (timer_.get_state() == TimerState::IDLE) {
-                timer_.start();
-            }
-            else if (timer_.get_state() == TimerState::RUNNING) {
-                timer_.pause();
-            }
-            else if (timer_.get_state() == TimerState::PAUSED) {
-                timer_.resume();
-            }
-            break;
-
-
-        case SDLK_r:
-            reset_current_timer();
-            break;
-
-
-
-        default:
-            break;
-        }
-    }
-}
-*/
 
 //updated handle_events()
 void App::handle_events()
@@ -334,12 +252,17 @@ void App::render_timer_screen()
 
 void App::render_settings_screen()
 {
+    //added
+    const PomodoroConfig& current =
+        settings_.current();
+
     renderer_.render_text(
         "Settings",
         270,
         80
     );
 
+    /*
     renderer_.render_text(
         "Work: 25 min",
         220,
@@ -360,6 +283,38 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Long Break Interval: 4",
+        220,
+        280
+    );
+    */
+    
+    renderer_.render_text(
+        "Work: " +
+        std::to_string(current.work_minutes) +
+        " min",
+        220,
+        160
+    );
+
+    renderer_.render_text(
+        "Short Break: " +
+        std::to_string(current.short_break_minutes) +
+        " min",
+        220,
+        200
+    );
+
+    renderer_.render_text(
+        "Long Break: " +
+        std::to_string(current.long_break_minutes) +
+        " min",
+        220,
+        240
+    );
+
+    renderer_.render_text(
+        "Long Break Interval: " +
+        std::to_string(current.long_break_interval),
         220,
         280
     );

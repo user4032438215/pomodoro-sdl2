@@ -1,8 +1,8 @@
+//settings.cpp 
 #include "settings.hpp"
 
 #include <fstream>
 #include <nlohmann/json.hpp>
-//#include <C:\dev\pomodoro\pomodoro\external\nlohmann\json.hpp>
 
 using json = nlohmann::json;
 
@@ -37,10 +37,26 @@ bool Settings::load(const std::string& path)
         }
 
         // ☆ 検証が終わってからメンバーを更新する
+        /*
         work_minutes_ = new_work_minutes;
         short_break_minutes_ = new_short_break_minutes;
         long_break_minutes_ = new_long_break_minutes;
         long_break_interval_ = new_long_break_interval;
+        */
+
+        // settings.json から 取得した値を代入
+        config_.work_minutes =
+            new_work_minutes;
+
+        config_.short_break_minutes =
+            new_short_break_minutes;
+
+        config_.long_break_minutes =
+            new_long_break_minutes;
+
+        config_.long_break_interval =
+            new_long_break_interval;
+
 
         return true;
     }
@@ -51,11 +67,20 @@ bool Settings::load(const std::string& path)
 
 bool Settings::validate() const noexcept
 {
-    return work_minutes_ >= 1 &&
-        short_break_minutes_ >= 1 &&
-        long_break_minutes_ >= 1 &&
-        long_break_interval_ >= 1;
+    return 
+        config_.work_minutes >= 1 &&
+        config_.short_break_minutes >= 1 &&
+        config_.long_break_minutes >= 1 &&
+        config_.long_break_interval >= 1;
 }
+
+
+const PomodoroConfig& Settings::current() const
+{
+    return config_;
+}
+
+
 
 // 将来的に実装
 //bool Settings::save(const std::string& path) const

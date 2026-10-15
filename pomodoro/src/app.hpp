@@ -1,3 +1,4 @@
+//app.hpp
 #pragma once
 
 #include "pomodoro_timer.hpp"
@@ -55,7 +56,6 @@ private:
     // PomodoroSessionがSettingsを参照するため
     Settings settings_;
 
-    // ☆ Settingsを参照する構成
     PomodoroSession session_;
     PomodoroTimer timer_;
     PomodoroRenderer renderer_;
