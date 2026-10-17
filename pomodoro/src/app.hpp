@@ -67,7 +67,13 @@ private:
     SDL_Rect reset_button_{ 150, 330, 100, 40 };
     SDL_Rect settings_button_{ 390, 330, 100, 40 };
 
+    //added
+    SDL_Rect work_minus_button_{ 180, 150, 40, 40 };
+    SDL_Rect work_plus_button_{ 420, 150, 40, 40 };
+
     SDL_Rect back_button_{ 270, 400, 100, 40 };
+
+
 
     //added
     AppScreen screen_{ AppScreen::TIMER };

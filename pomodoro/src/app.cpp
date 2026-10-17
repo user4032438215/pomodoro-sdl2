@@ -261,32 +261,6 @@ void App::render_settings_screen()
         270,
         80
     );
-
-    /*
-    renderer_.render_text(
-        "Work: 25 min",
-        220,
-        160
-    );
-
-    renderer_.render_text(
-        "Short Break: 5 min",
-        220,
-        200
-    );
-
-    renderer_.render_text(
-        "Long Break: 15 min",
-        220,
-        240
-    );
-
-    renderer_.render_text(
-        "Long Break Interval: 4",
-        220,
-        280
-    );
-    */
     
     renderer_.render_text(
         "Work: " +
@@ -317,6 +291,18 @@ void App::render_settings_screen()
         std::to_string(current.long_break_interval),
         220,
         280
+    );
+
+    //added
+    renderer_.render_button(
+        work_minus_button_,
+        "-"
+    );
+
+    // ☆ 作業時間の+ボタン
+    renderer_.render_button(
+        work_plus_button_,
+        "+"
     );
 
     renderer_.render_button(
