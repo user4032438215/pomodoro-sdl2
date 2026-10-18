@@ -1,301 +1,136 @@
 @startuml
-
-title Pomodoro Timer MVP - Layered UI Architecture
-
 skinparam classAttributeIconSize 0
-skinparam packageStyle rectangle
-skinparam shadowing false
-skinparam linetype ortho
 
-hide empty members
+class App {
+  - Settings settings_
+  - PomodoroSession session_
+  - PomodoroTimer timer_
+  - PomodoroRenderer renderer_
+  - bool running_
+  - AppScreen screen_
+  - SDL_Rect start_button_
+  - SDL_Rect reset_button_
+  - SDL_Rect settings_button_
+  - SDL_Rect work_minus_button_
+  - SDL_Rect work_plus_button_
+  - SDL_Rect back_button_
 
-package "Core" {
-
-    enum SessionType {
-        WORK
-        SHORT_BREAK
-        LONG_BREAK
-    }
-
-    enum TimerState {
-        IDLE
-        RUNNING
-        PAUSED
-        FINISHED
-    }
-
-    class PomodoroConfig <<data>> {
-        + work_minutes : int = 25
-        + short_break_minutes : int = 5
-        + long_break_minutes : int = 15
-        + long_break_interval : int = 4
-    }
-
-    class Settings {
-        - defaults_ : const PomodoroConfig
-        - current_ : PomodoroConfig
-
-        + Settings()
-
-        + load(path : string) : bool
-        + save(path : string) : bool
-
-        + apply(config : PomodoroConfig) : bool
-        + reset_to_defaults() : void
-
-        + current() : const PomodoroConfig&
-        + defaults() : const PomodoroConfig&
-
-        + validate() : bool
-        {static} + validate(config : PomodoroConfig) : bool
-    }
-
-    class PomodoroSession {
-        - settings_ : const Settings&
-        - completed_work_sessions_ : int = 0
-        - current_ : SessionType = WORK
-
-        + PomodoroSession(settings : const Settings&)
-
-        + next() : void
-        + reset() : void
-
-        + get_type() : SessionType
-        + get_duration_minutes() : int
-        + get_session_name() : string
-        + should_take_long_break() : bool
-        + completed_work_sessions() : int
-    }
-
-    class PomodoroTimer {
-        - duration_sec_ : int
-        - accumulated_elapsed_ : steady_clock::duration
-        - last_start_at_ : steady_clock::time_point
-        - state_ : TimerState
-
-        - get_elapsed_duration() : steady_clock::duration
-
-        + PomodoroTimer(duration_sec : int)
-
-        + start() : void
-        + pause() : void
-        + resume() : void
-        + reset(duration_sec : int) : void
-        + update() : void
-
-        + get_remaining_seconds() : int
-        + get_progress() : float
-        + is_finished() : bool
-        + get_state() : TimerState
-    }
+  + init()
+  + run()
+  + timer_state()
+  + session_type()
+  + remaining_seconds()
+  + progress()
+  + button_label()
+  - handle_events()
+  - update()
+  - render()
+  - render_timer_screen()
+  - render_settings_screen()
+  - is_inside()
+  - start_current_session()
+  - reset_current_timer()
+  - start_current_timer()
 }
 
-package "UI Model" {
-
-    enum AppScreen {
-        TIMER
-        SETTINGS
-    }
-
-    class SettingsDraft <<data>> {
-        + config : PomodoroConfig
-    }
-
-    class Button <<data>> {
-        + bounds : SDL_Rect
-        + label : string
-        + enabled : bool
-        + hovered : bool
-
-        + contains(x : int, y : int) : bool
-    }
+class Settings {
+  - PomodoroConfig config_
+  + load()
+  + validate()
+  + current()
 }
 
-package "UI Rendering Infrastructure" {
-
-    class PomodoroRenderer {
-        - window_ : SDL_Window*
-        - renderer_ : SDL_Renderer*
-        - font_ : TTF_Font*
-
-        + PomodoroRenderer()
-        + ~PomodoroRenderer()
-
-        + init(title : string, width : int, height : int) : bool
-        + shutdown() : void
-
-        + clear() : void
-        + present() : void
-
-        + render_text(
-            text : string,
-            x : int,
-            y : int
-        ) : void
-
-        + render_button(
-            button : Button
-        ) : void
-
-        + render_progress_circle(
-            progress : float
-        ) : void
-    }
+class PomodoroConfig {
+  + int work_minutes
+  + int short_break_minutes
+  + int long_break_minutes
+  + int long_break_interval
 }
 
-package "UI Screens" {
+class PomodoroSession {
+  - const Settings& settings_
+  - int completed_work_sessions_
+  - SessionType current_
 
-    class TimerScreenView {
-        - renderer_ : PomodoroRenderer&
-
-        + TimerScreenView(renderer : PomodoroRenderer&)
-
-        + render(
-            session_name : string,
-            remaining_sec : int,
-            progress : float,
-            completed_count : int,
-            state : TimerState
-        ) : void
-    }
-
-    class SettingsScreenView {
-        - renderer_ : PomodoroRenderer&
-
-        + SettingsScreenView(renderer : PomodoroRenderer&)
-
-        + render(
-            config : PomodoroConfig,
-            buttons : Button[]
-        ) : void
-    }
+  + next()
+  + reset()
+  + get_type()
+  + get_duration_minutes()
+  + get_session_name()
+  + should_take_long_break()
+  + completed_work_sessions()
 }
 
-package "Application" {
+class PomodoroTimer {
+  - int duration_sec_
+  - Duration accumulated_elapsed_
+  - TimePoint last_start_at_
+  - TimerState state_
 
-    class App {
-        - settings_ : Settings
-        - session_ : PomodoroSession
-        - timer_ : PomodoroTimer
-
-        - renderer_ : PomodoroRenderer
-        - timer_screen_ : TimerScreenView
-        - settings_screen_ : SettingsScreenView
-
-        - screen_ : AppScreen = TIMER
-        - settings_draft_ : SettingsDraft
-        - running_ : bool = true
-
-        - start_button_ : Button
-        - pause_resume_button_ : Button
-        - reset_button_ : Button
-        - settings_button_ : Button
-
-        - save_settings_button_ : Button
-        - cancel_settings_button_ : Button
-        - defaults_settings_button_ : Button
-
-        + App()
-        + init() : bool
-        + run() : void
-
-        - handle_events() : void
-        - handle_timer_screen_click(x : int, y : int) : void
-        - handle_settings_screen_click(x : int, y : int) : void
-
-        - update() : void
-        - render() : void
-
-        - open_settings_screen() : void
-        - close_settings_screen() : void
-        - save_settings() : bool
-        - cancel_settings() : void
-        - reset_settings_draft() : void
-
-        - reset_current_timer() : void
-        - advance_to_next_session() : void
-    }
+  + start()
+  + pause()
+  + resume()
+  + reset()
+  + update()
+  + is_finished()
+  + get_state()
+  + get_remaining_seconds()
+  + get_progress()
 }
 
-package "Entry Point" {
-    class Main {
-        + main() : int
-    }
+class PomodoroRenderer {
+  - SDL_Window* window_
+  - SDL_Renderer* renderer_
+  - TTF_Font* font_
+
+  + init()
+  + shutdown()
+  + clear()
+  + present()
+  + render_text()
+  + render_timer()
+  + render_session_name()
+  + render_progress_bar()
+  + render_button()
+  - format_time()
 }
 
-' Core ownership and dependencies
-Settings *-- PomodoroConfig : defaults/current
-PomodoroSession --> Settings : reads current config
-PomodoroSession --> SessionType
-PomodoroTimer --> TimerState
+class Button {
+  - SDL_Rect bounds_
+  - std::string label_
 
-' Application ownership
-App *-- Settings
-App *-- PomodoroSession
-App *-- PomodoroTimer
-App *-- PomodoroRenderer
-App *-- TimerScreenView
-App *-- SettingsScreenView
+  + contains()
+  + render()
+  + label()
+  + set_label()
+}
 
-' Application UI state
-App *-- AppScreen
-App *-- SettingsDraft
-App *-- Button
+enum AppScreen {
+  TIMER
+  SETTINGS
+}
 
-' View dependencies
-TimerScreenView --> PomodoroRenderer : uses
-SettingsScreenView --> PomodoroRenderer : uses
-SettingsScreenView --> PomodoroConfig : displays
-SettingsScreenView --> Button : displays
+enum SessionType {
+  WORK
+  SHORT_BREAK
+  LONG_BREAK
+}
 
-' Application coordination
-App --> PomodoroSession : controls
-App --> PomodoroTimer : controls
-App --> TimerScreenView : updates
-App --> SettingsScreenView : updates
+enum TimerState {
+  IDLE
+  RUNNING
+  PAUSED
+  FINISHED
+}
 
-' Entry point
-Main --> App : creates
-
-note right of PomodoroRenderer
-  Owns SDL resources and provides
-  low-level drawing operations.
-
-  It should not decide:
-  - when a timer starts
-  - when a session changes
-  - whether settings are valid
-end note
-
-note right of TimerScreenView
-  Timer screen presentation only.
-
-  It formats and arranges:
-  - MM:SS
-  - session name
-  - progress circle
-  - completed count
-  - timer state
-end note
-
-note right of SettingsScreenView
-  Settings screen presentation only.
-
-  It draws:
-  - setting labels
-  - current draft values
-  - plus/minus buttons
-  - save/cancel/default buttons
-end note
-
-note right of App
-  Application orchestration only.
-
-  It handles:
-  - SDL events
-  - screen transitions
-  - button actions
-  - Timer and Session coordination
-end note
-
+App --> Settings : uses
+App --> PomodoroSession : uses
+App --> PomodoroTimer : uses
+App --> PomodoroRenderer : uses
+App --> AppScreen : owns
+Settings --> PomodoroConfig : owns
+PomodoroSession --> Settings : reads
+PomodoroSession --> SessionType : owns
+PomodoroTimer --> TimerState : owns
+App ..> Button : planned
 @enduml
