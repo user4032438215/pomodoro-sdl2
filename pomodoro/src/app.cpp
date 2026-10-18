@@ -110,6 +110,16 @@ void App::handle_events()
 
             // Settings画面のとき
             else if (screen_ == AppScreen::SETTINGS) {
+
+                //added
+                if (is_inside(work_minus_button_, x, y)) {
+                    std::cout << "- button clicked\n";
+                }
+
+                if (is_inside(work_plus_button_, x, y)) {
+                    std::cout << "+ button clicked\n";
+                }
+
                 if (is_inside(back_button_, x, y)) {
                     screen_ = AppScreen::TIMER;
                 }

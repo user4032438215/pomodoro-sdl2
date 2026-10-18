@@ -73,8 +73,6 @@ private:
 
     SDL_Rect back_button_{ 270, 400, 100, 40 };
 
-
-
     //added
     AppScreen screen_{ AppScreen::TIMER };
 };
