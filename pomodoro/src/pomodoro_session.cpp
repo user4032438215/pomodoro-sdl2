@@ -1,3 +1,4 @@
+//pomodoro_session.cpp
 #include "pomodoro_session.hpp"
 
 //#include <algorithm>
@@ -12,15 +13,18 @@ PomodoroSession::PomodoroSession(const Settings& settings)
 
 int PomodoroSession::get_duration_minutes() const
 {
+    const PomodoroConfig& config =
+    settings_.current();
+
     switch (current_) {
     case SessionType::WORK:
-        return settings_.work_minutes();
+        return config.work_minutes;
 
     case SessionType::SHORT_BREAK:
-        return settings_.short_break_minutes();
+        return config.short_break_minutes;
 
     case SessionType::LONG_BREAK:
-        return settings_.long_break_minutes();
+        return config.long_break_minutes;
 
     default:
         throw std::logic_error("Unknown SessionType");
@@ -47,7 +51,7 @@ std::string PomodoroSession::get_session_name() const
 bool PomodoroSession::should_take_long_break() const
 {
     return completed_work_sessions_ > 0 &&
-           completed_work_sessions_ % settings_.long_break_interval() == 0;
+           completed_work_sessions_ % settings_.current().long_break_interval == 0;
 }
 
 void PomodoroSession::next()
