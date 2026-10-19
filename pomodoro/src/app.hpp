@@ -62,6 +62,9 @@ private:
 
     bool running_{ true };
 
+    //added 261019 ☆ 設定画面で編集中の値 を 入れる メンバ
+    PomodoroConfig settings_draft_{};
+
     //added button size and coordinate
     SDL_Rect start_button_{ 270, 330, 100, 40 };
     SDL_Rect reset_button_{ 150, 330, 100, 40 };

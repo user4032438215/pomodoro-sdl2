@@ -74,11 +74,12 @@ bool Settings::validate() const noexcept
         config_.long_break_interval >= 1;
 }
 
-
+/*
 const PomodoroConfig& Settings::current() const
 {
     return config_;
 }
+*/
 
 
 

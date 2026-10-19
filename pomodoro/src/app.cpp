@@ -3,6 +3,9 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+//added for std::min/max
+#include <algorithm>
+
 App::App()
     : settings_(),
     session_(settings_),
@@ -85,7 +88,7 @@ void App::handle_events()
             const int x = event.button.x;
             const int y = event.button.y;
 
-            // Timer画面のとき
+            // Timer screen
             if (screen_ == AppScreen::TIMER) {
                 if (is_inside(start_button_, x, y)) {
                     if (timer_.get_state() == TimerState::IDLE) {
@@ -104,20 +107,33 @@ void App::handle_events()
                 }
 
                 if (is_inside(settings_button_, x, y)) {
+                    settings_draft_ = settings_.current();
                     screen_ = AppScreen::SETTINGS;
                 }
             }
 
-            // Settings画面のとき
+            // Settings screen
             else if (screen_ == AppScreen::SETTINGS) {
 
                 //added
                 if (is_inside(work_minus_button_, x, y)) {
                     std::cout << "- button clicked\n";
+
+                    settings_draft_.work_minutes =
+                        std::max(
+                            5,
+                            settings_draft_.work_minutes - 5
+                        );
                 }
 
                 if (is_inside(work_plus_button_, x, y)) {
                     std::cout << "+ button clicked\n";
+
+                    settings_draft_.work_minutes =
+                        std::min(
+                            60,
+                            settings_draft_.work_minutes + 5
+                        );
                 }
 
                 if (is_inside(back_button_, x, y)) {
@@ -181,39 +197,6 @@ void App::update()
     reset_current_timer();
 }
 
-/*
-void App::render()
-{
-    renderer_.clear();
-
-    renderer_.render_session_name(
-        session_.get_session_name()
-    );
-
-    renderer_.render_timer(
-        timer_.get_remaining_seconds(),
-        timer_.get_progress()
-    );
-
-    renderer_.render_progress_bar(
-        timer_.get_progress()
-    );
-
-    // button
-    renderer_.render_button(
-        start_button_,
-        button_label()
-    );
-
-    renderer_.render_button(
-        reset_button_,
-        "RESET"
-    );
-
-    renderer_.present();
-}
-*/
-
 //updated render()
 void App::render()
 {
@@ -274,7 +257,8 @@ void App::render_settings_screen()
     
     renderer_.render_text(
         "Work: " +
-        std::to_string(current.work_minutes) +
+        //std::to_string(current.work_minutes) +
+        std::to_string(settings_draft_.work_minutes) +
         " min",
         220,
         160
@@ -282,7 +266,8 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Short Break: " +
-        std::to_string(current.short_break_minutes) +
+        //std::to_string(current.short_break_minutes) +
+        std::to_string(settings_draft_.short_break_minutes) +
         " min",
         220,
         200
@@ -290,7 +275,8 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Long Break: " +
-        std::to_string(current.long_break_minutes) +
+        //std::to_string(current.long_break_minutes) +
+        std::to_string(settings_draft_.long_break_minutes) +
         " min",
         220,
         240
@@ -298,7 +284,8 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Long Break Interval: " +
-        std::to_string(current.long_break_interval),
+        //std::to_string(current.long_break_interval),
+        std::to_string(settings_draft_.long_break_interval),
         220,
         280
     );
