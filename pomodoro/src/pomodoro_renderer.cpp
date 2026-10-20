@@ -114,7 +114,6 @@ void PomodoroRenderer::present()
     SDL_RenderPresent(renderer_);
 }
 
-//
 void PomodoroRenderer::render_timer(int remaining_sec, float progress)
 {
     {
@@ -141,7 +140,6 @@ void PomodoroRenderer::render_session_name(const std::string& name)
 {
     render_text("Session: " + name, 50, 70);
 }
-
 
 void PomodoroRenderer::render_progress_bar(float progress) //
 {

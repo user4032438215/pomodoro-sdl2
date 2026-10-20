@@ -115,9 +115,9 @@ void App::handle_events()
             // Settings screen
             else if (screen_ == AppScreen::SETTINGS) {
 
-                //added
+                
                 if (is_inside(work_minus_button_, x, y)) {
-                    std::cout << "- button clicked\n";
+                    std::cout << "work_minus_button clicked\n";
 
                     settings_draft_.work_minutes =
                         std::max(
@@ -127,7 +127,7 @@ void App::handle_events()
                 }
 
                 if (is_inside(work_plus_button_, x, y)) {
-                    std::cout << "+ button clicked\n";
+                    std::cout << "work_plus_button clicked\n";
 
                     settings_draft_.work_minutes =
                         std::min(
@@ -135,6 +135,28 @@ void App::handle_events()
                             settings_draft_.work_minutes + 5
                         );
                 }
+
+                //added
+                if (is_inside(short_break_minus_button_, x, y)) {
+                    std::cout << "short_break_minus_button clicked\n";
+
+                    settings_draft_.short_break_minutes =
+                        std::max(
+                            5,
+                            settings_draft_.short_break_minutes - 5
+                        );
+                }
+
+                if (is_inside(short_break_plus_button_, x, y)) {
+                    std::cout << "short_break_plus_button clicked\n";
+
+                    settings_draft_.short_break_minutes =
+                        std::max(
+                            60,
+                            settings_draft_.short_break_minutes + 5
+                        );
+                }
+
 
                 if (is_inside(back_button_, x, y)) {
                     screen_ = AppScreen::TIMER;
@@ -197,7 +219,6 @@ void App::update()
     reset_current_timer();
 }
 
-//updated render()
 void App::render()
 {
     renderer_.clear();
@@ -257,7 +278,6 @@ void App::render_settings_screen()
     
     renderer_.render_text(
         "Work: " +
-        //std::to_string(current.work_minutes) +
         std::to_string(settings_draft_.work_minutes) +
         " min",
         220,
@@ -266,7 +286,6 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Short Break: " +
-        //std::to_string(current.short_break_minutes) +
         std::to_string(settings_draft_.short_break_minutes) +
         " min",
         220,
@@ -275,7 +294,6 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Long Break: " +
-        //std::to_string(current.long_break_minutes) +
         std::to_string(settings_draft_.long_break_minutes) +
         " min",
         220,
@@ -284,24 +302,34 @@ void App::render_settings_screen()
 
     renderer_.render_text(
         "Long Break Interval: " +
-        //std::to_string(current.long_break_interval),
         std::to_string(settings_draft_.long_break_interval),
         220,
         280
     );
 
-    //added
+    //work
     renderer_.render_button(
         work_minus_button_,
         "-"
     );
 
-    // ☆ 作業時間の+ボタン
     renderer_.render_button(
         work_plus_button_,
         "+"
     );
 
+    //short_break
+    renderer_.render_button(
+        short_break_minus_button_,
+        "-"
+    );
+
+    renderer_.render_button(
+        short_break_plus_button_,
+        "+"
+    );
+
+    //back
     renderer_.render_button(
         back_button_,
         "BACK"
