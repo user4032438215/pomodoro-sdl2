@@ -179,6 +179,27 @@ void App::handle_events()
                         );
                 }
 
+                //long_break_int
+                if (is_inside(long_break_interval_minus_button_, x, y)) {
+                    std::cout << "long_break_interval_minus_button clicked\n";
+
+                    settings_draft_.long_break_interval =
+                        std::max(
+                            1,
+                            settings_draft_.long_break_interval - 1
+                        );
+                }
+
+                if (is_inside(long_break_interval_plus_button_, x, y)) {
+                    std::cout << "long_break_interval_plus_button clicked\n";
+
+                    settings_draft_.long_break_interval=
+                        std::min(
+                            10,
+                            settings_draft_.long_break_interval + 1
+                        );
+                }
+
 
                 if (is_inside(back_button_, x, y)) {
                     screen_ = AppScreen::TIMER;
@@ -363,6 +384,15 @@ void App::render_settings_screen()
     );
 
     //long_break_int
+    renderer_.render_button(
+        long_break_interval_minus_button_,
+        "-"
+    );
+
+    renderer_.render_button(
+        long_break_interval_plus_button_,
+        "+"
+    );
 
     //back
     renderer_.render_button(
