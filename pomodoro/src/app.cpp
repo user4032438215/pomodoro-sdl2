@@ -126,6 +126,7 @@ void App::handle_events()
                         );
                 }
 
+                //work
                 if (is_inside(work_plus_button_, x, y)) {
                     std::cout << "work_plus_button clicked\n";
 
@@ -136,7 +137,7 @@ void App::handle_events()
                         );
                 }
 
-                //added
+                //short_break
                 if (is_inside(short_break_minus_button_, x, y)) {
                     std::cout << "short_break_minus_button clicked\n";
 
@@ -151,9 +152,30 @@ void App::handle_events()
                     std::cout << "short_break_plus_button clicked\n";
 
                     settings_draft_.short_break_minutes =
-                        std::max(
+                        std::min(
                             60,
                             settings_draft_.short_break_minutes + 5
+                        );
+                }
+
+                //long_break
+                if (is_inside(long_break_minus_button_, x, y)) {
+                    std::cout << "long_break_minus_button clicked\n";
+
+                    settings_draft_.long_break_minutes =
+                        std::max(
+                            5,
+                            settings_draft_.long_break_minutes - 5
+                        );
+                }
+
+                if (is_inside(long_break_plus_button_, x, y)) {
+                    std::cout << "long_break_plus_button clicked\n";
+
+                    settings_draft_.long_break_minutes =
+                        std::min(
+                            60,
+                            settings_draft_.long_break_minutes + 5
                         );
                 }
 
@@ -328,6 +350,19 @@ void App::render_settings_screen()
         short_break_plus_button_,
         "+"
     );
+
+    //long_break
+    renderer_.render_button(
+        long_break_minus_button_,
+        "-"
+    );
+
+    renderer_.render_button(
+        long_break_plus_button_,
+        "+"
+    );
+
+    //long_break_int
 
     //back
     renderer_.render_button(

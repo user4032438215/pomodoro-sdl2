@@ -79,6 +79,8 @@ private:
     SDL_Rect short_break_plus_button_{ 560, 190, 40, 40 };
 
     //long_break
+    SDL_Rect long_break_minus_button_{ 180, 230, 40, 40 };
+    SDL_Rect long_break_plus_button_{ 560, 230, 40, 40 };
 
     //long_break_int
 
