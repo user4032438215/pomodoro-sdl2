@@ -200,9 +200,19 @@ void App::handle_events()
                         );
                 }
 
-
+                //BACK
                 if (is_inside(back_button_, x, y)) {
                     screen_ = AppScreen::TIMER;
+                }
+
+                //SAVE
+                if (is_inside(save_button_, x, y)) {
+                    std::cout << "save_button clicked\n";
+                }
+
+                //init
+                if (is_inside(init_button_, x, y)) {
+                    std::cout << "init_button clicked\n";
                 }
             }
 
@@ -398,6 +408,18 @@ void App::render_settings_screen()
     renderer_.render_button(
         back_button_,
         "BACK"
+    );
+
+    //save
+    renderer_.render_button(
+        save_button_,
+        "SAVE"
+    );
+
+    //reset
+    renderer_.render_button(
+        init_button_,
+        "INIT"
     );
 }
 

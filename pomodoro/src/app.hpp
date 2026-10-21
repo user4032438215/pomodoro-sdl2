@@ -65,12 +65,13 @@ private:
     //added 261019 ☆ 設定画面で編集中の値 を 入れる メンバ
     PomodoroConfig settings_draft_{};
 
-
+    //TIMER buttons
     SDL_Rect start_button_{ 270, 330, 100, 40 };
     SDL_Rect reset_button_{ 150, 330, 100, 40 };
     SDL_Rect settings_button_{ 390, 330, 100, 40 };
 
-
+    //SETTINGS buttons
+    //work
     SDL_Rect work_minus_button_{ 180, 150, 40, 40 };
     SDL_Rect work_plus_button_{ 560, 150, 40, 40 };
 
@@ -86,8 +87,9 @@ private:
     SDL_Rect long_break_interval_minus_button_{ 180, 270, 40, 40 };
     SDL_Rect long_break_interval_plus_button_{ 560, 270, 40, 40 };
 
-    SDL_Rect back_button_{ 270, 400, 100, 40 };
-
+    SDL_Rect back_button_{ 150, 400, 100, 40 };
+    SDL_Rect save_button_{ 270, 400, 100, 40 };
+    SDL_Rect init_button_{ 390, 400, 100, 40 };
 
     AppScreen screen_{ AppScreen::TIMER };
 };
