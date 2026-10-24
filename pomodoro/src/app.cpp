@@ -213,6 +213,8 @@ void App::handle_events()
                 //init
                 if (is_inside(init_button_, x, y)) {
                     std::cout << "init_button clicked\n";
+
+                    settings_draft_ = settings_.defaults();
                 }
             }
 
