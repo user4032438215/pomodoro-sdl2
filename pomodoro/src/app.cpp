@@ -208,6 +208,25 @@ void App::handle_events()
                 //SAVE
                 if (is_inside(save_button_, x, y)) {
                     std::cout << "save_button clicked\n";
+
+                    if (settings_.apply(settings_draft_))
+                    {
+                        if (settings_.save("settings.json"))
+                        {
+                            reset_current_timer();
+
+                            std::cout << "settings saved\n";
+                            screen_ = AppScreen::TIMER;
+                        }
+                        else
+                        {
+                            std::cerr << "failed to save settings\n";
+                        }
+                    }
+                    else
+                    {
+                        std::cerr << "invalid settings draft\n";
+                    }
                 }
 
                 //init

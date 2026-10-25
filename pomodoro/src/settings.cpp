@@ -36,14 +36,6 @@ bool Settings::load(const std::string& path)
             return false;
         }
 
-        // ☆ 検証が終わってからメンバーを更新する
-        /*
-        work_minutes_ = new_work_minutes;
-        short_break_minutes_ = new_short_break_minutes;
-        long_break_minutes_ = new_long_break_minutes;
-        long_break_interval_ = new_long_break_interval;
-        */
-
         // settings.json から 取得した値を代入
         config_.work_minutes =
             new_work_minutes;
@@ -74,31 +66,48 @@ bool Settings::validate() const noexcept
         config_.long_break_interval >= 1;
 }
 
-/*
-const PomodoroConfig& Settings::current() const
-{
-    return config_;
+
+//added 261025
+bool Settings::apply(const PomodoroConfig& draft) {
+    if (!validate_config(draft)) {
+        return false;
+    }
+
+    config_ = draft;
+    return true;
 }
-*/
 
+bool Settings::save(const std::string& path) const
+{
+    std::ofstream ofs(path);
 
+    if (!ofs) {
+        return false;
+    }
 
-// 将来的に実装
-//bool Settings::save(const std::string& path) const
-//{
-//    std::ofstream ofs(path);
-//
-//    if (!ofs) {
-//        return false;
-//    }
-//
-//    const json j = {
-//        { "work_minutes", work_minutes_ },
-//        { "short_break_minutes", short_break_minutes_ },
-//        { "long_break_minutes", long_break_minutes_ },
-//        { "long_break_interval", long_break_interval_ }
-//    };
-//
-//    ofs << j.dump(4);
-//    return static_cast<bool>(ofs);
-//}
+    const json j = {
+        { "work_minutes", config_.work_minutes },
+        { "short_break_minutes", config_.short_break_minutes },
+        { "long_break_minutes", config_.long_break_minutes },
+        { "long_break_interval", config_.long_break_interval }
+    };
+
+    ofs << j.dump(4);
+
+    return static_cast<bool>(ofs);
+}
+
+bool Settings::validate_config(
+    const PomodoroConfig& config
+) const noexcept
+{
+    return
+        config.work_minutes >= 5 &&
+        config.work_minutes <= 60 &&
+        config.short_break_minutes >= 5 &&
+        config.short_break_minutes <= 60 &&
+        config.long_break_minutes >= 5 &&
+        config.long_break_minutes <= 60 &&
+        config.long_break_interval >= 1 &&
+        config.long_break_interval <= 10;
+}

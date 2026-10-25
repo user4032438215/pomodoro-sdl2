@@ -9,8 +9,8 @@
 | 10/21 | ~~ハリボテのSAVE/INIT button の 実装~~
 | 10/22 | Settings機能の現状をDOCSへ書く
 | 10/23 | 風邪で休み
-| 10/24 | 
-| 10/25 | ⑧ キャンセルボタンを作る                   | 1.5h |
+| 10/24 | init 初期値の呼び出しのみ
+| 10/25 | save button  apply save の 実装
 | 10/26 | ⑨ Settings::save()を実装する         | 2h   |
 | 10/27 | ⑨ 保存ボタンを作り、settings.jsonへ保存する   | 2h   |
 | 10/28 | ⑩ 保存後、現在のTimerを新しい設定でIDLEへ戻す    | 2h   |

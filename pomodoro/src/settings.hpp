@@ -18,9 +18,11 @@ public:
 
     bool load(const std::string& path);
 
-    //bool save(const std::string& path) const; 将来的に実装
-
     bool validate() const noexcept;
+
+    //added 261025
+    bool apply(const PomodoroConfig& draft);
+    bool save(const std::string& path) const;
 
     
     //const PomodoroConfig& current() const;
@@ -36,6 +38,12 @@ public:
     }
 
 private:
+
+    //added for apply
+    bool validate_config(
+        const PomodoroConfig& config
+    ) const noexcept;
+
     PomodoroConfig config_{};
 
 };
