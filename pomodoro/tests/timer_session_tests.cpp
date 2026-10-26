@@ -304,6 +304,20 @@ namespace
     //    std::cout << "[PASS] app initial state\n";
     //}
 
+    void test_session_uses_updated_settings()
+    {
+        Settings settings;
+        PomodoroSession session(settings);
+
+        PomodoroConfig draft;
+        draft.work_minutes = 40;
+
+        assert(settings.apply(draft));
+
+        assert(session.get_duration_minutes() == 40);
+
+        std::cout << "[PASS] session uses updated settings\n";
+    }
 
 }
 
