@@ -34,10 +34,12 @@ class App {
 }
 
 class Settings {
-  - PomodoroConfig config_
-  + load()
-  + validate()
+  - PomodoroConfig current_config_
+  + apply()
+  + save()
   + current()
+  + defaults()
+  - validate_config()
 }
 
 class PomodoroConfig {
@@ -132,5 +134,5 @@ Settings --> PomodoroConfig : owns
 PomodoroSession --> Settings : reads
 PomodoroSession --> SessionType : owns
 PomodoroTimer --> TimerState : owns
-App ..> Button : planned
+App ..> Button : planned refactor
 @enduml
