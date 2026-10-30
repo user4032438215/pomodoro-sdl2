@@ -6,6 +6,8 @@
 #include "pomodoro_renderer.hpp"
 #include "settings.hpp"
 
+#include "button.hpp"
+
 #include <SDL2/SDL.h> 
 
 //added
@@ -66,7 +68,13 @@ private:
     PomodoroConfig settings_draft_{};
 
     //TIMER buttons
-    SDL_Rect start_button_{ 270, 330, 100, 40 };
+
+    //SDL_Rect start_button_{ 270, 330, 100, 40 };
+    Button start_button_{
+    { 270, 330, 100, 40 },
+    "START"
+    };
+
     SDL_Rect reset_button_{ 150, 330, 100, 40 };
     SDL_Rect settings_button_{ 390, 330, 100, 40 };
 

@@ -17,6 +17,7 @@ add_executable(pomodoro
     src/pomodoro_timer.cpp
     src/pomodoro_session.cpp
     src/settings.cpp
+    src/button.cpp
 )
 
 target_include_directories(pomodoro PRIVATE
@@ -53,6 +54,7 @@ add_executable(pomodoro_tests
     src/pomodoro_session.cpp
     src/settings.cpp
     src/pomodoro_renderer.cpp
+    src/button.cpp
 )
 
 target_include_directories(pomodoro_tests PRIVATE

@@ -1,5 +1,6 @@
 //app.cpp
 #include "app.hpp"
+//#include "button.hpp"
 #include <iostream>
 #include <SDL2/SDL.h>
 
@@ -90,7 +91,9 @@ void App::handle_events()
 
             // Timer screen
             if (screen_ == AppScreen::TIMER) {
-                if (is_inside(start_button_, x, y)) {
+
+                //refactor
+                if (start_button_.contains_point(x, y)) {
                     if (timer_.get_state() == TimerState::IDLE) {
                         timer_.start();
                     }
@@ -327,10 +330,15 @@ void App::render_timer_screen()
         "RESET"
     );
 
-    renderer_.render_button(
+    /*
+        renderer_.render_button(
         start_button_,
         button_label()
     );
+    */
+    start_button_.set_label(button_label());
+    start_button_.render(renderer_);
+
 
     renderer_.render_button(
         settings_button_,
