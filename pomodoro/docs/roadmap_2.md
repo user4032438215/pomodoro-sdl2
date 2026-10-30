@@ -15,7 +15,7 @@
 | 10/27 | 1.リファクタの優先順位を決める 2.Buttonクラスの設計をDOCSへ書く 3.命名変更の候補をDOCSへ書く 4.PUMLを更新する 5.コミットしてpushする
 | 10/28 | button class declared (button.hpp, button.cpp)
 | 10/29 | app START button のみクラスに置き換える ビルド失敗
-| 10/30 | 
+| 10/30 | app START button のみクラスに置き換える ヘッダでインクルードしたら成功した。一旦PUSH。RESET, SETTINGS replaced and checked
 | 10/31 |
 | 11/1  |
 | 11/2  |

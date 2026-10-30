@@ -1,6 +1,6 @@
 //app.cpp
 #include "app.hpp"
-//#include "button.hpp"
+
 #include <iostream>
 #include <SDL2/SDL.h>
 
@@ -34,7 +34,6 @@ bool App::init()
 
     std::cout << "[App] Settings validated\n";
 
-    //start_current_session();
     reset_current_timer();
 
     std::cout << "[App] Initializing renderer...\n";
@@ -50,10 +49,7 @@ bool App::init()
 
 void App::run()
 {
-    
-    //timer_.start();
-
-    while (running_) {
+        while (running_) {
         handle_events();
 
         // ☆ RUNNING中の時間切れをFINISHEDへ反映する
@@ -65,7 +61,7 @@ void App::run()
         // ☆ 現在の状態を描画する
         render();
 
-        // 約60FPS
+        // about60FPS
         SDL_Delay(16);
     }
 
@@ -104,7 +100,7 @@ void App::handle_events()
                         timer_.resume();
                     }
                 }
-
+                /*
                 if (is_inside(reset_button_, x, y)) {
                     reset_current_timer();
                 }
@@ -113,6 +109,17 @@ void App::handle_events()
                     settings_draft_ = settings_.current();
                     screen_ = AppScreen::SETTINGS;
                 }
+                */
+                //replace
+                if (reset_button_.contains_point(x, y)) {
+                    reset_current_timer();
+                }
+
+                if (settings_button_.contains_point(x, y)) {
+                    settings_draft_ = settings_.current();
+                    screen_ = AppScreen::SETTINGS;
+                }
+
             }
 
             // Settings screen
@@ -325,25 +332,34 @@ void App::render_timer_screen()
         timer_.get_progress()
     );
 
-    renderer_.render_button(
-        reset_button_,
-        "RESET"
-    );
+
 
     /*
         renderer_.render_button(
         start_button_,
         button_label()
-    );
+        );
+
+        renderer_.render_button(
+        reset_button_,
+        "RESET"
+        );
+
+        renderer_.render_button(
+        settings_button_,
+        "SETTINGS"
+        );
     */
+    //replace
     start_button_.set_label(button_label());
     start_button_.render(renderer_);
 
+    reset_button_.render(renderer_);
 
-    renderer_.render_button(
-        settings_button_,
-        "SETTINGS"
-    );
+    settings_button_.render(renderer_);
+
+
+
 }
 
 void App::render_settings_screen()

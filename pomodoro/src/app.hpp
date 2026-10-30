@@ -69,14 +69,29 @@ private:
 
     //TIMER buttons
 
-    //SDL_Rect start_button_{ 270, 330, 100, 40 };
+    /*
+    SDL_Rect start_button_{ 270, 330, 100, 40 };
+    SDL_Rect reset_button_{ 150, 330, 100, 40 };
+    SDL_Rect settings_button_{ 390, 330, 100, 40 };
+    */
+
+    //replace
     Button start_button_{
     { 270, 330, 100, 40 },
     "START"
     };
 
-    SDL_Rect reset_button_{ 150, 330, 100, 40 };
-    SDL_Rect settings_button_{ 390, 330, 100, 40 };
+    Button reset_button_{
+    { 150, 330, 100, 40 },
+    "RESET"
+    };
+
+    Button settings_button_{
+    { 390, 330, 100, 40 },
+    "SETTINGS"
+    };
+
+
 
     //SETTINGS buttons
     //work
