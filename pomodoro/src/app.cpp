@@ -210,8 +210,15 @@ void App::handle_events()
                         );
                 }
 
+                /*
+                replaced buttons
+                                if (is_inside(back_button_, x, y)) {
+                    screen_ = AppScreen::TIMER;
+                }
+                */
+
                 //BACK
-                if (is_inside(back_button_, x, y)) {
+                if (back_button_.contains_point(x, y)) {
                     screen_ = AppScreen::TIMER;
                 }
 
@@ -405,6 +412,19 @@ void App::render_settings_screen()
         280
     );
 
+
+    //buttons
+
+    /*
+    replaced
+    
+        renderer_.render_button(
+        back_button_,
+        "BACK"
+    );
+    
+    */
+
     //work
     renderer_.render_button(
         work_minus_button_,
@@ -450,10 +470,7 @@ void App::render_settings_screen()
     );
 
     //back
-    renderer_.render_button(
-        back_button_,
-        "BACK"
-    );
+    back_button_.render(renderer_);
 
     //save
     renderer_.render_button(

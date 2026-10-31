@@ -13,106 +13,109 @@
 //added
 enum class AppScreen
 {
-    TIMER,
-    SETTINGS
+	TIMER,
+	SETTINGS
 };
 
 class App {
 public:
-    App();
+	App();
 
-    bool init();
-    void run();
+	bool init();
+	void run();
 
-    //added for tests
-    TimerState timer_state() const noexcept;
-    SessionType session_type() const noexcept;
-    int remaining_seconds() const;
-    float progress() const;
+	//added for tests
+	TimerState timer_state() const noexcept;
+	SessionType session_type() const noexcept;
+	int remaining_seconds() const;
+	float progress() const;
 
 
-    //added
-    std::string button_label() const;
+	//added
+	std::string button_label() const;
 
 private:
-    void handle_events();
-    void update();
-    void render(); // updated
+	void handle_events();
+	void update();
+	void render(); // updated
 
-    //added
-    void render_timer_screen();
-    void render_settings_screen();
+	//added
+	void render_timer_screen();
+	void render_settings_screen();
 
-    //added
-    bool is_inside(
-        const SDL_Rect& rect,
-        int x,
-        int y
-    ) const;
+	//added
+	bool is_inside(
+		const SDL_Rect& rect,
+		int x,
+		int y
+	) const;
 
-    void start_current_session();
-    void reset_current_timer();
-    void start_current_timer();
+	void start_current_session();
+	void reset_current_timer();
+	void start_current_timer();
 
-    // ☆ settings_を最初に宣言する
-    // PomodoroSessionがSettingsを参照するため
-    Settings settings_;
+	// ☆ settings_を最初に宣言する
+	// PomodoroSessionがSettingsを参照するため
+	Settings settings_;
 
-    PomodoroSession session_;
-    PomodoroTimer timer_;
-    PomodoroRenderer renderer_;
+	PomodoroSession session_;
+	PomodoroTimer timer_;
+	PomodoroRenderer renderer_;
 
-    bool running_{ true };
+	bool running_{ true };
 
-    //added 261019 ☆ 設定画面で編集中の値 を 入れる メンバ
-    PomodoroConfig settings_draft_{};
+	//added 261019 ☆ 設定画面で編集中の値 を 入れる メンバ
+	PomodoroConfig settings_draft_{};
 
-    //TIMER buttons
+	//TIMER buttons
+	//replace
+	Button start_button_{
+	{ 270, 330, 100, 40 },
+	"START"
+	};
 
-    /*
-    SDL_Rect start_button_{ 270, 330, 100, 40 };
-    SDL_Rect reset_button_{ 150, 330, 100, 40 };
-    SDL_Rect settings_button_{ 390, 330, 100, 40 };
-    */
+	Button reset_button_{
+	{ 150, 330, 100, 40 },
+	"RESET"
+	};
 
-    //replace
-    Button start_button_{
-    { 270, 330, 100, 40 },
-    "START"
-    };
-
-    Button reset_button_{
-    { 150, 330, 100, 40 },
-    "RESET"
-    };
-
-    Button settings_button_{
-    { 390, 330, 100, 40 },
-    "SETTINGS"
-    };
+	Button settings_button_{
+	{ 390, 330, 100, 40 },
+	"SETTINGS"
+	};
 
 
 
-    //SETTINGS buttons
-    //work
-    SDL_Rect work_minus_button_{ 180, 150, 40, 40 };
-    SDL_Rect work_plus_button_{ 560, 150, 40, 40 };
+	//SETTINGS buttons
+	//work
+	SDL_Rect work_minus_button_{ 180, 150, 40, 40 };
+	SDL_Rect work_plus_button_{ 560, 150, 40, 40 };
 
-    //short_break
-    SDL_Rect short_break_minus_button_{ 180, 190, 40, 40 };
-    SDL_Rect short_break_plus_button_{ 560, 190, 40, 40 };
+	//short_break
+	SDL_Rect short_break_minus_button_{ 180, 190, 40, 40 };
+	SDL_Rect short_break_plus_button_{ 560, 190, 40, 40 };
 
-    //long_break
-    SDL_Rect long_break_minus_button_{ 180, 230, 40, 40 };
-    SDL_Rect long_break_plus_button_{ 560, 230, 40, 40 };
+	//long_break
+	SDL_Rect long_break_minus_button_{ 180, 230, 40, 40 };
+	SDL_Rect long_break_plus_button_{ 560, 230, 40, 40 };
 
-    //long_break_int
-    SDL_Rect long_break_interval_minus_button_{ 180, 270, 40, 40 };
-    SDL_Rect long_break_interval_plus_button_{ 560, 270, 40, 40 };
+	//long_break_int
+	SDL_Rect long_break_interval_minus_button_{ 180, 270, 40, 40 };
+	SDL_Rect long_break_interval_plus_button_{ 560, 270, 40, 40 };
 
-    SDL_Rect back_button_{ 150, 400, 100, 40 };
-    SDL_Rect save_button_{ 270, 400, 100, 40 };
-    SDL_Rect init_button_{ 390, 400, 100, 40 };
 
-    AppScreen screen_{ AppScreen::TIMER };
+	/*
+	SDL_Rect back_button_{ 150, 400, 100, 40 };
+	*/
+
+	//replace
+	Button back_button_{
+	{ 150, 400, 100, 40 },
+	"BACK"
+	};
+	
+	SDL_Rect save_button_{ 270, 400, 100, 40 };
+	SDL_Rect init_button_{ 390, 400, 100, 40 };
+
+	AppScreen screen_{ AppScreen::TIMER };
 };
