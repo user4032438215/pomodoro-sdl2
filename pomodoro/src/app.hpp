@@ -84,31 +84,65 @@ private:
 	"SETTINGS"
 	};
 
-
-
-	//SETTINGS buttons
-	//work
+	//replaced
+	/*
 	SDL_Rect work_minus_button_{ 180, 150, 40, 40 };
 	SDL_Rect work_plus_button_{ 560, 150, 40, 40 };
-
-	//short_break
+	---
 	SDL_Rect short_break_minus_button_{ 180, 190, 40, 40 };
 	SDL_Rect short_break_plus_button_{ 560, 190, 40, 40 };
-
-	//long_break
+	---
 	SDL_Rect long_break_minus_button_{ 180, 230, 40, 40 };
 	SDL_Rect long_break_plus_button_{ 560, 230, 40, 40 };
-
-	//long_break_int
+	---
 	SDL_Rect long_break_interval_minus_button_{ 180, 270, 40, 40 };
 	SDL_Rect long_break_interval_plus_button_{ 560, 270, 40, 40 };
 
-
-	/*
 	SDL_Rect back_button_{ 150, 400, 100, 40 };
 	*/
 
-	//replace
+	//SETTINGSbuttons
+	//work
+	Button work_minus_button_{
+	{ 180, 150, 40, 40 },
+	"-"
+	};
+	Button work_plus_button_{
+	{ 560, 150, 40, 40 },
+	"+"
+	};
+
+	//short_break
+	Button short_break_minus_button_{
+	{ 180, 190, 40, 40 },
+	"-"
+	};
+	Button short_break_plus_button_{
+	{ 560, 190, 40, 40 },
+	"+"
+	};
+
+	//long_break
+	Button long_break_minus_button_{
+	{ 180, 230, 40, 40 },
+	"-"
+	};
+	Button long_break_plus_button_{
+	{ 560, 230, 40, 40 },
+	"+"
+	};
+
+	//long_break_int
+	Button long_break_interval_minus_button_{
+	{ 180, 270, 40, 40 },
+	"-"
+	};
+	Button long_break_interval_plus_button_{
+	{ 560, 270, 40, 40 },
+	"+"
+	};
+
+	//
 	Button back_button_{
 	{ 150, 400, 100, 40 },
 	"BACK"

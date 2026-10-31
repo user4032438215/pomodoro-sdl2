@@ -100,17 +100,7 @@ void App::handle_events()
                         timer_.resume();
                     }
                 }
-                /*
-                if (is_inside(reset_button_, x, y)) {
-                    reset_current_timer();
-                }
 
-                if (is_inside(settings_button_, x, y)) {
-                    settings_draft_ = settings_.current();
-                    screen_ = AppScreen::SETTINGS;
-                }
-                */
-                //replace
                 if (reset_button_.contains_point(x, y)) {
                     reset_current_timer();
                 }
@@ -125,8 +115,8 @@ void App::handle_events()
             // Settings screen
             else if (screen_ == AppScreen::SETTINGS) {
 
-                
-                if (is_inside(work_minus_button_, x, y)) {
+                //work
+                if (work_minus_button_.contains_point(x, y)) {
                     std::cout << "work_minus_button clicked\n";
 
                     settings_draft_.work_minutes =
@@ -136,8 +126,7 @@ void App::handle_events()
                         );
                 }
 
-                //work
-                if (is_inside(work_plus_button_, x, y)) {
+                if (work_plus_button_.contains_point(x, y)) {
                     std::cout << "work_plus_button clicked\n";
 
                     settings_draft_.work_minutes =
@@ -148,7 +137,7 @@ void App::handle_events()
                 }
 
                 //short_break
-                if (is_inside(short_break_minus_button_, x, y)) {
+                if (short_break_minus_button_.contains_point(x, y)) {
                     std::cout << "short_break_minus_button clicked\n";
 
                     settings_draft_.short_break_minutes =
@@ -158,7 +147,7 @@ void App::handle_events()
                         );
                 }
 
-                if (is_inside(short_break_plus_button_, x, y)) {
+                if (short_break_plus_button_.contains_point(x, y)) {
                     std::cout << "short_break_plus_button clicked\n";
 
                     settings_draft_.short_break_minutes =
@@ -169,7 +158,7 @@ void App::handle_events()
                 }
 
                 //long_break
-                if (is_inside(long_break_minus_button_, x, y)) {
+                if (long_break_minus_button_.contains_point(x, y)) {
                     std::cout << "long_break_minus_button clicked\n";
 
                     settings_draft_.long_break_minutes =
@@ -179,7 +168,7 @@ void App::handle_events()
                         );
                 }
 
-                if (is_inside(long_break_plus_button_, x, y)) {
+                if (long_break_plus_button_.contains_point(x, y)) {
                     std::cout << "long_break_plus_button clicked\n";
 
                     settings_draft_.long_break_minutes =
@@ -190,7 +179,7 @@ void App::handle_events()
                 }
 
                 //long_break_int
-                if (is_inside(long_break_interval_minus_button_, x, y)) {
+                if (long_break_interval_minus_button_.contains_point(x, y)) {
                     std::cout << "long_break_interval_minus_button clicked\n";
 
                     settings_draft_.long_break_interval =
@@ -200,7 +189,7 @@ void App::handle_events()
                         );
                 }
 
-                if (is_inside(long_break_interval_plus_button_, x, y)) {
+                if (long_break_interval_plus_button_.contains_point(x, y)) {
                     std::cout << "long_break_interval_plus_button clicked\n";
 
                     settings_draft_.long_break_interval=
@@ -417,7 +406,44 @@ void App::render_settings_screen()
 
     /*
     replaced
-    
+        renderer_.render_button(
+        work_plus_button_,
+        "+"
+        );
+        renderer_.render_button(
+        short_break_minus_button_,
+        "-"
+        );
+    ---
+        renderer_.render_button(
+        short_break_minus_button_,
+        "-"
+        );
+        renderer_.render_button(
+        short_break_plus_button_,
+        "+"
+        );
+    ---
+        renderer_.render_button(
+        long_break_minus_button_,
+        "-"
+        );
+
+    renderer_.render_button(
+        long_break_plus_button_,
+        "+"
+        );
+    ---
+        renderer_.render_button(
+        long_break_interval_minus_button_,
+        "-"
+        );
+
+    renderer_.render_button(
+        long_break_interval_plus_button_,
+        "+"
+        );
+    ---
         renderer_.render_button(
         back_button_,
         "BACK"
@@ -425,50 +451,23 @@ void App::render_settings_screen()
     
     */
 
-    //work
-    renderer_.render_button(
-        work_minus_button_,
-        "-"
-    );
-
-    renderer_.render_button(
-        work_plus_button_,
-        "+"
-    );
+    //work_minus
+    work_minus_button_.render(renderer_);
+    work_plus_button_.render(renderer_);
 
     //short_break
-    renderer_.render_button(
-        short_break_minus_button_,
-        "-"
-    );
-
-    renderer_.render_button(
-        short_break_plus_button_,
-        "+"
-    );
+    short_break_minus_button_.render(renderer_);
+    short_break_plus_button_.render(renderer_);
 
     //long_break
-    renderer_.render_button(
-        long_break_minus_button_,
-        "-"
-    );
-
-    renderer_.render_button(
-        long_break_plus_button_,
-        "+"
-    );
+    long_break_minus_button_.render(renderer_);
+    long_break_plus_button_.render(renderer_);
 
     //long_break_int
-    renderer_.render_button(
-        long_break_interval_minus_button_,
-        "-"
-    );
+    long_break_interval_minus_button_.render(renderer_);
+    long_break_interval_plus_button_.render(renderer_);
 
-    renderer_.render_button(
-        long_break_interval_plus_button_,
-        "+"
-    );
-
+//---
     //back
     back_button_.render(renderer_);
 

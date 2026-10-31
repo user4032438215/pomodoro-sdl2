@@ -16,7 +16,7 @@
 | 10/28 | button class declared (button.hpp, button.cpp)
 | 10/29 | app START button のみクラスに置き換える ビルド失敗
 | 10/30 | app START button のみクラスに置き換える ヘッダでインクルードしたら成功した。一旦PUSH。RESET, SETTINGS replaced and checked
-| 10/31 |
+| 10/31 |BACK button replaced, setepper buttons replaced to button class
 | 11/1  |
 | 11/2  |
 | 11/3  |
