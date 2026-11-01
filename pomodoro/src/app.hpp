@@ -148,7 +148,12 @@ private:
 	"BACK"
 	};
 	
-	SDL_Rect save_button_{ 270, 400, 100, 40 };
+	Button save_button_{
+	{ 270, 400, 100, 40 },
+	"SAVE"
+	};
+	//SDL_Rect save_button_{ 270, 400, 100, 40 };
+
 	SDL_Rect init_button_{ 390, 400, 100, 40 };
 
 	AppScreen screen_{ AppScreen::TIMER };

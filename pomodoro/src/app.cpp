@@ -212,7 +212,30 @@ void App::handle_events()
                 }
 
                 //SAVE
-                if (is_inside(save_button_, x, y)) {
+                if(save_button_.contains_point(x, y)){
+				   std::cout << "save_button clicked\n";
+
+                   if (settings_.apply(settings_draft_))
+                   {
+                            if (settings_.save("settings.json"))
+                            {
+                                reset_current_timer();
+
+                                std::cout << "settings saved\n";
+                                screen_ = AppScreen::TIMER;
+                            }
+                            else
+                            {
+                                std::cerr << "failed to save settings\n";
+                            }
+                        }
+                        else
+                        {
+                            std::cerr << "invalid settings draft\n";
+                        }
+                    }
+                /*
+                                if (is_inside(save_button_, x, y)) {
                     std::cout << "save_button clicked\n";
 
                     if (settings_.apply(settings_draft_))
@@ -234,6 +257,8 @@ void App::handle_events()
                         std::cerr << "invalid settings draft\n";
                     }
                 }
+                */
+
 
                 //init
                 if (is_inside(init_button_, x, y)) {
@@ -472,10 +497,14 @@ void App::render_settings_screen()
     back_button_.render(renderer_);
 
     //save
-    renderer_.render_button(
+    save_button_.render(renderer_);
+    /*
+        renderer_.render_button(
         save_button_,
         "SAVE"
     );
+    */
+
 
     //reset
     renderer_.render_button(
