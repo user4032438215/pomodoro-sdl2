@@ -68,7 +68,6 @@ void App::run()
     renderer_.shutdown();
 }
 
-//updated handle_events()
 void App::handle_events()
 {
     SDL_Event event{};
@@ -88,7 +87,6 @@ void App::handle_events()
             // Timer screen
             if (screen_ == AppScreen::TIMER) {
 
-                //refactor
                 if (start_button_.contains_point(x, y)) {
                     if (timer_.get_state() == TimerState::IDLE) {
                         timer_.start();
@@ -199,13 +197,8 @@ void App::handle_events()
                         );
                 }
 
-                /*
-                replaced buttons
-                                if (is_inside(back_button_, x, y)) {
-                    screen_ = AppScreen::TIMER;
-                }
-                */
 
+                //Timer screen
                 //BACK
                 if (back_button_.contains_point(x, y)) {
                     screen_ = AppScreen::TIMER;
@@ -260,12 +253,20 @@ void App::handle_events()
                 */
 
 
-                //init
-                if (is_inside(init_button_, x, y)) {
+                //init to defaults
+                if(defaults_button_.contains_point(x, y)){
+                        std::cout << "init_button clicked\n";
+
+                        settings_draft_ = settings_.defaults();
+                    }
+                /*
+                 if (is_inside(init_button_, x, y)) {
                     std::cout << "init_button clicked\n";
 
                     settings_draft_ = settings_.defaults();
                 }
+                */
+
             }
 
             continue;
@@ -394,7 +395,7 @@ void App::render_settings_screen()
         270,
         80
     );
-    
+
     renderer_.render_text(
         "Work: " +
         std::to_string(settings_draft_.work_minutes) +
@@ -427,54 +428,7 @@ void App::render_settings_screen()
     );
 
 
-    //buttons
-
-    /*
-    replaced
-        renderer_.render_button(
-        work_plus_button_,
-        "+"
-        );
-        renderer_.render_button(
-        short_break_minus_button_,
-        "-"
-        );
-    ---
-        renderer_.render_button(
-        short_break_minus_button_,
-        "-"
-        );
-        renderer_.render_button(
-        short_break_plus_button_,
-        "+"
-        );
-    ---
-        renderer_.render_button(
-        long_break_minus_button_,
-        "-"
-        );
-
-    renderer_.render_button(
-        long_break_plus_button_,
-        "+"
-        );
-    ---
-        renderer_.render_button(
-        long_break_interval_minus_button_,
-        "-"
-        );
-
-    renderer_.render_button(
-        long_break_interval_plus_button_,
-        "+"
-        );
-    ---
-        renderer_.render_button(
-        back_button_,
-        "BACK"
-    );
-    
-    */
+    //TIMER buttons
 
     //work_minus
     work_minus_button_.render(renderer_);
@@ -492,7 +446,6 @@ void App::render_settings_screen()
     long_break_interval_minus_button_.render(renderer_);
     long_break_interval_plus_button_.render(renderer_);
 
-//---
     //back
     back_button_.render(renderer_);
 
@@ -505,12 +458,15 @@ void App::render_settings_screen()
     );
     */
 
-
-    //reset
-    renderer_.render_button(
+    //reset to defaults
+    defaults_button_.render(renderer_);
+    /*
+        renderer_.render_button(
         init_button_,
         "INIT"
     );
+    */
+
 }
 
 /*
