@@ -3,8 +3,6 @@
 
 #include <iostream>
 #include <SDL2/SDL.h>
-
-//added for std::min/max
 #include <algorithm>
 
 App::App()
@@ -52,16 +50,16 @@ void App::run()
         while (running_) {
         handle_events();
 
-        // ☆ RUNNING中の時間切れをFINISHEDへ反映する
+        //RUNNING中の時間切れをFINISHEDへ反映する
         timer_.update();
 
-        // ☆ 終了していれば次のセッションへ進める
+        //終了していれば次のセッションへ進める
         update();
 
-        // ☆ 現在の状態を描画する
+        //現在の状態を描画する
         render();
 
-        // about60FPS
+        //about60FPS
         SDL_Delay(16);
     }
 
@@ -197,14 +195,10 @@ void App::handle_events()
                         );
                 }
 
-
-                //Timer screen
-                //BACK
                 if (back_button_.contains_point(x, y)) {
                     screen_ = AppScreen::TIMER;
                 }
 
-                //SAVE
                 if(save_button_.contains_point(x, y)){
 				   std::cout << "save_button clicked\n";
 
@@ -227,46 +221,12 @@ void App::handle_events()
                             std::cerr << "invalid settings draft\n";
                         }
                     }
-                /*
-                                if (is_inside(save_button_, x, y)) {
-                    std::cout << "save_button clicked\n";
 
-                    if (settings_.apply(settings_draft_))
-                    {
-                        if (settings_.save("settings.json"))
-                        {
-                            reset_current_timer();
-
-                            std::cout << "settings saved\n";
-                            screen_ = AppScreen::TIMER;
-                        }
-                        else
-                        {
-                            std::cerr << "failed to save settings\n";
-                        }
-                    }
-                    else
-                    {
-                        std::cerr << "invalid settings draft\n";
-                    }
-                }
-                */
-
-
-                //init to defaults
                 if(defaults_button_.contains_point(x, y)){
                         std::cout << "init_button clicked\n";
 
                         settings_draft_ = settings_.defaults();
                     }
-                /*
-                 if (is_inside(init_button_, x, y)) {
-                    std::cout << "init_button clicked\n";
-
-                    settings_draft_ = settings_.defaults();
-                }
-                */
-
             }
 
             continue;
@@ -318,10 +278,10 @@ void App::update()
         return;
     }
 
-    // ☆ WORK終了、休憩終了などの状態遷移はSessionに任せる
+    // WORK終了、休憩終了などの状態遷移はSessionに任せる
     session_.next();
 
-    // ☆ 次のセッションを設定するだけ
+    // 次のセッションを設定するだけ
     reset_current_timer();
 }
 
@@ -354,39 +314,14 @@ void App::render_timer_screen()
         timer_.get_progress()
     );
 
-
-
-    /*
-        renderer_.render_button(
-        start_button_,
-        button_label()
-        );
-
-        renderer_.render_button(
-        reset_button_,
-        "RESET"
-        );
-
-        renderer_.render_button(
-        settings_button_,
-        "SETTINGS"
-        );
-    */
-    //replace
     start_button_.set_label(button_label());
     start_button_.render(renderer_);
-
     reset_button_.render(renderer_);
-
     settings_button_.render(renderer_);
-
-
-
 }
 
 void App::render_settings_screen()
 {
-    //added
     const PomodoroConfig& current =
         settings_.current();
 
@@ -429,44 +364,23 @@ void App::render_settings_screen()
 
 
     //TIMER buttons
-
-    //work_minus
+    //stepper buttons
     work_minus_button_.render(renderer_);
     work_plus_button_.render(renderer_);
 
-    //short_break
     short_break_minus_button_.render(renderer_);
     short_break_plus_button_.render(renderer_);
 
-    //long_break
     long_break_minus_button_.render(renderer_);
     long_break_plus_button_.render(renderer_);
 
-    //long_break_int
     long_break_interval_minus_button_.render(renderer_);
     long_break_interval_plus_button_.render(renderer_);
 
-    //back
+    //
     back_button_.render(renderer_);
-
-    //save
     save_button_.render(renderer_);
-    /*
-        renderer_.render_button(
-        save_button_,
-        "SAVE"
-    );
-    */
-
-    //reset to defaults
     defaults_button_.render(renderer_);
-    /*
-        renderer_.render_button(
-        init_button_,
-        "INIT"
-    );
-    */
-
 }
 
 /*
@@ -479,6 +393,9 @@ added
 かつ
 マウスのyが、ボタンの下端より小さい
 */
+
+/*
+
 bool App::is_inside(
     const SDL_Rect& rect,
     int x,
@@ -491,6 +408,8 @@ bool App::is_inside(
         y >= rect.y &&
         y < rect.y + rect.h;
 }
+*/
+
 
 void App::start_current_session()
 {

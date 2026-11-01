@@ -10,7 +10,6 @@
 
 #include <SDL2/SDL.h> 
 
-//added
 enum class AppScreen
 {
 	TIMER,
@@ -30,31 +29,29 @@ public:
 	int remaining_seconds() const;
 	float progress() const;
 
-
-	//added
 	std::string button_label() const;
 
 private:
 	void handle_events();
 	void update();
-	void render(); // updated
-
-	//added
+	void render();
 	void render_timer_screen();
 	void render_settings_screen();
 
-	//added
-	bool is_inside(
+	/*
+		bool is_inside(
 		const SDL_Rect& rect,
 		int x,
 		int y
 	) const;
+	*/
+
 
 	void start_current_session();
 	void reset_current_timer();
 	void start_current_timer();
 
-	// ☆ settings_を最初に宣言する
+	// settings_を最初に宣言する
 	// PomodoroSessionがSettingsを参照するため
 	Settings settings_;
 
@@ -64,11 +61,11 @@ private:
 
 	bool running_{ true };
 
-	//added 261019 ☆ 設定画面で編集中の値 を 入れる メンバ
+	//設定画面で編集中の値 を 入れる メンバ
 	PomodoroConfig settings_draft_{};
 
-	//TIMER buttons
-	//replace
+	//TIMER screen buttons
+	//
 	Button start_button_{
 	{ 270, 330, 100, 40 },
 	"START"
@@ -84,25 +81,8 @@ private:
 	"SETTINGS"
 	};
 
-	//replaced
-	/*
-	SDL_Rect work_minus_button_{ 180, 150, 40, 40 };
-	SDL_Rect work_plus_button_{ 560, 150, 40, 40 };
-	---
-	SDL_Rect short_break_minus_button_{ 180, 190, 40, 40 };
-	SDL_Rect short_break_plus_button_{ 560, 190, 40, 40 };
-	---
-	SDL_Rect long_break_minus_button_{ 180, 230, 40, 40 };
-	SDL_Rect long_break_plus_button_{ 560, 230, 40, 40 };
-	---
-	SDL_Rect long_break_interval_minus_button_{ 180, 270, 40, 40 };
-	SDL_Rect long_break_interval_plus_button_{ 560, 270, 40, 40 };
-
-	SDL_Rect back_button_{ 150, 400, 100, 40 };
-	*/
-
-	//SETTINGSbuttons
-	//work
+	//SETTINGS screen buttons
+	//stteper
 	Button work_minus_button_{
 	{ 180, 150, 40, 40 },
 	"-"
@@ -112,7 +92,6 @@ private:
 	"+"
 	};
 
-	//short_break
 	Button short_break_minus_button_{
 	{ 180, 190, 40, 40 },
 	"-"
@@ -122,7 +101,6 @@ private:
 	"+"
 	};
 
-	//long_break
 	Button long_break_minus_button_{
 	{ 180, 230, 40, 40 },
 	"-"
@@ -132,7 +110,6 @@ private:
 	"+"
 	};
 
-	//long_break_int
 	Button long_break_interval_minus_button_{
 	{ 180, 270, 40, 40 },
 	"-"
@@ -152,13 +129,11 @@ private:
 	{ 270, 400, 100, 40 },
 	"SAVE"
 	};
-	//SDL_Rect save_button_{ 270, 400, 100, 40 };
 
 	Button defaults_button_{
 	{ 390, 400, 100, 40 },
 	"DEFAULTS"
 	};
-	//SDL_Rect init_button_{ 390, 400, 100, 40 };
 
 	AppScreen screen_{ AppScreen::TIMER };
 };
