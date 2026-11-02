@@ -31,7 +31,6 @@ target_link_libraries(pomodoro PRIVATE
     nlohmann_json::nlohmann_json
 )
 
-# settings.jsonを実行ファイルと同じフォルダへコピーする
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/settings.json
     ${CMAKE_BINARY_DIR}/settings.json
@@ -46,29 +45,53 @@ endif()
 
 enable_testing()
 
-add_executable(pomodoro_tests
-    tests/timer_session_tests.cpp
-
-    src/app.cpp
+add_executable(timer_tests
+    tests/timer_tests.cpp
     src/pomodoro_timer.cpp
-    src/pomodoro_session.cpp
-    src/settings.cpp
-    src/pomodoro_renderer.cpp
-    src/button.cpp
 )
 
-target_include_directories(pomodoro_tests PRIVATE
+target_include_directories(timer_tests PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(pomodoro_tests PRIVATE
-    SDL2::SDL2
-    SDL2::SDL2main
-    SDL2_ttf::SDL2_ttf
+add_test(
+    NAME timer_tests
+    COMMAND timer_tests
+)
+
+add_executable(session_tests
+    tests/session_tests.cpp
+    src/pomodoro_session.cpp
+    src/settings.cpp
+)
+
+target_include_directories(session_tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(session_tests PRIVATE
     nlohmann_json::nlohmann_json
 )
 
 add_test(
-    NAME pomodoro_tests
-    COMMAND pomodoro_tests
+    NAME session_tests
+    COMMAND session_tests
+)
+
+add_executable(settings_tests
+    tests/settings_tests.cpp
+    src/settings.cpp
+)
+
+target_include_directories(settings_tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_link_libraries(settings_tests PRIVATE
+    nlohmann_json::nlohmann_json
+)
+
+add_test(
+    NAME settings_tests
+    COMMAND settings_tests
 )

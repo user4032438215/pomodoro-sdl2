@@ -18,7 +18,7 @@
 | 10/30 | app START button のみクラスに置き換える ヘッダでインクルードしたら成功した。一旦PUSH。RESET, SETTINGS replaced and checked
 | 10/31 |BACK button replaced, setepper buttons replaced to button class
 | 11/1  |SAVE button replaced, DEFAULTS(init) button replaced
-| 11/2  |
+| 11/2  |timer_session_tests.cppをtimer_tests.cppとsession_tests.cppへ分ける ビルドしてテストパス 
 | 11/3  |
 
 
@@ -46,7 +46,7 @@
 ---
 # 円形プログレスの実装前にやっておくべきこと
 ~~1. ステッパーの範囲ルールを直す~~
-2. 使わなくなったコードを削除する
+~~2. 使わなくなったコードを削除する~~
 3. SettingsとButtonの自動テストを追加する
 4. 手動総合テストをもう一度行う
 5. その後、円形プログレスへ進む
