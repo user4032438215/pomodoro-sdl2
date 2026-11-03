@@ -91,7 +91,32 @@ target_link_libraries(settings_tests PRIVATE
     nlohmann_json::nlohmann_json
 )
 
+
 add_test(
     NAME settings_tests
     COMMAND settings_tests
+)
+
+add_executable(button_tests
+    tests/button_tests.cpp
+    src/button.cpp
+    src/pomodoro_renderer.cpp
+)
+
+target_include_directories(button_tests PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+target_compile_definitions(button_tests PRIVATE
+    SDL_MAIN_HANDLED
+)
+
+target_link_libraries(button_tests PRIVATE
+    SDL2::SDL2
+    SDL2_ttf::SDL2_ttf
+)
+
+add_test(
+    NAME button_tests
+    COMMAND button_tests
 )

@@ -18,10 +18,15 @@
 | 10/30 | app START button のみクラスに置き換える ヘッダでインクルードしたら成功した。一旦PUSH。RESET, SETTINGS replaced and checked
 | 10/31 |BACK button replaced, setepper buttons replaced to button class
 | 11/1  |SAVE button replaced, DEFAULTS(init) button replaced
-| 11/2  |timer_session_tests.cppをtimer_tests.cppとsession_tests.cppへ分ける ビルドしてテストパス 
-| 11/3  |
-
-
+| 11/2  |timer_session_tests.cppをtimer_tests.cppとsession_tests.cppへ分ける ビルドしてテストパス timer_session_tests.cppは削除
+| 11/3  |button_tests.cpp AIに丸投げ めっちゃ苦労した CMale に
+		 ```txt
+		 target_compile_definitions(button_tests PRIVATE
+		 SDL_MAIN_HANDLED
+		 )
+		 ```
+		 追記 
+| 11/4  |
 
 # Settings機能の現状
 
