@@ -51,8 +51,9 @@ bool PomodoroRenderer::init(const std::string& title, int width, int height)
         return false;
     }
 
-    //font_ = TTF_OpenFont("NotoSans-Regular.ttf", 32);
-    font_ = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 32);
+
+    //font_ = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 32);
+    font_ = TTF_OpenFont("fonts/NotoSans-Regular.ttf", 32);
     if (!font_) {
         std::cerr << "TTF_OpenFont Error: " << TTF_GetError() << "\n";
         shutdown();

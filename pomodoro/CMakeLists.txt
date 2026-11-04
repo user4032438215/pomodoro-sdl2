@@ -37,6 +37,13 @@ configure_file(
     COPYONLY
 )
 
+add_custom_command(
+    TARGET pomodoro POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_CURRENT_SOURCE_DIR}/fonts
+        $<TARGET_FILE_DIR:pomodoro>/fonts
+)
+
 if (WIN32)
     target_compile_definitions(pomodoro PRIVATE
         SDL_MAIN_HANDLED
