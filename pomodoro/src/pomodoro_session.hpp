@@ -3,10 +3,7 @@
 #include "settings.hpp"
 #include <string>
 
-/// <summary>
-/// PomodoroSessionが管理するのは、
-/// 現在のセッション種別 と作業セッションの完了回数 の 2種のみ
-/// </summary>
+// PomodoroSessionが管理するのは、現在のセッション種別 と作業セッションの完了回数 の 2種のみ
 
 enum class SessionType {
     WORK,

@@ -1,0 +1,45 @@
+@startuml
+title Pomodoro UI Flow
+
+start
+
+:Launch application;
+
+:Load settings.json;
+
+:Initialize SDL window and renderer;
+
+repeat
+
+  :Clear screen;
+
+  :Render session name;
+
+  :Render remaining time;
+
+  :Render progress bar;
+
+  :Render buttons;
+
+  :Present screen;
+
+  if (User clicks START / PAUSE?) then (yes)
+    :Toggle timer state;
+  endif
+
+  if (User clicks RESET?) then (yes)
+    :Reset current session;
+  endif
+
+  :Update timer;
+
+repeat while (Application is running?) is (yes)
+->no;
+
+:Shutdown renderer;
+
+:Save settings;
+
+stop
+
+@enduml

@@ -26,7 +26,9 @@
 		 )
 		 ```
 		 追記 
-| 11/4  |
+| 11/4  |build: Noto Sans font for execution and copy fonts beside the executable
+| 11/5  |
+| 11/6  |docs: update architecture and UI diagrams
 
 # Settings機能の現状
 

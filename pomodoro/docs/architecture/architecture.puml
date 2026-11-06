@@ -1,0 +1,153 @@
+@startuml
+title Pomodoro - Current Architecture
+
+hide empty members
+
+package "Entry" {
+  class Main {
+    +main()
+  }
+}
+
+package "Application" {
+  class App {
+    +init() : bool
+    +run() : void
+    +timer_state() : TimerState
+    +session_type() : SessionType
+    +remaining_seconds() : int
+    +progress() : float
+    +button_label() : std::string
+
+    -handle_events() : void
+    -update() : void
+    -render() : void
+    -render_timer_screen() : void
+    -render_settings_screen() : void
+    -start_current_session() : void
+    -reset_current_timer() : void
+    -start_current_timer() : void
+
+    -settings_ : Settings
+    -session_ : PomodoroSession
+    -timer_ : PomodoroTimer
+    -renderer_ : PomodoroRenderer
+    -running_ : bool
+    -settings_draft_ : PomodoroConfig
+    -screen_ : AppScreen
+  }
+}
+
+package "Domain" {
+  class PomodoroTimer {
+    +start() : void
+    +pause() : void
+    +resume() : void
+    +reset(duration_sec : int) : void
+    +update() : void
+    +get_remaining_seconds() : int
+    +get_progress() : float
+    +is_finished() : bool
+    +get_state() : TimerState
+
+    -duration_sec_ : int
+    -accumulated_elapsed_ : Duration
+    -last_start_at_ : TimePoint
+    -state_ : TimerState
+  }
+
+  class PomodoroSession {
+    +next() : void
+    +reset() : void
+    +get_type() : SessionType
+    +get_duration_minutes() : int
+    +get_session_name() : std::string
+    +should_take_long_break() : bool
+    +completed_work_sessions() : int
+
+    -settings_ : const Settings&
+    -completed_work_sessions_ : int
+    -current_ : SessionType
+  }
+
+  class Settings {
+    +load(path : std::string) : bool
+    +validate() : bool
+    +apply(draft : PomodoroConfig) : bool
+    +save(path : std::string) : bool
+    +current() : const PomodoroConfig&
+    +defaults() : PomodoroConfig
+
+    -validate_config(config : PomodoroConfig) : bool
+    -config_ : PomodoroConfig
+  }
+
+  class PomodoroConfig {
+    +work_minutes : int
+    +short_break_minutes : int
+    +long_break_minutes : int
+    +long_break_interval : int
+  }
+}
+
+package "Presentation" {
+  class PomodoroRenderer {
+    +init(title : std::string, width : int, height : int) : bool
+    +shutdown() : void
+    +clear() : void
+    +present() : void
+    +render_timer(remaining_sec : int, progress : float) : void
+    +render_session_name(name : std::string) : void
+    +render_progress_bar(progress : float) : void
+    +render_button(bounds : SDL_Rect, label : std::string) : void
+    +render_text(text : std::string, x : int, y : int) : void
+
+    -format_time(remaining_sec : int) : std::string
+    -window_ : SDL_Window*
+    -renderer_ : SDL_Renderer*
+    -font_ : TTF_Font*
+  }
+
+  class Button {
+    +contains_point(x : int, y : int) : bool
+    +render(renderer : PomodoroRenderer&) : void
+    +label() : const std::string&
+    +set_label(label : std::string) : void
+
+    -rect_ : SDL_Rect
+    -label_ : std::string
+  }
+}
+
+Main ..> App : creates and runs
+
+App *-- Settings
+App *-- PomodoroSession
+App *-- PomodoroTimer
+App *-- PomodoroRenderer
+App *-- Button : owns multiple buttons
+
+PomodoroSession ..> Settings : reads configuration
+Button ..> PomodoroRenderer : renders itself through
+
+PomodoroRenderer ..> PomodoroTimer : uses TimerState
+
+note right of App
+  App owns the timer, session,
+  settings, renderer, and buttons.
+
+  App decides which screen is shown
+  and handles user input.
+end note
+
+note right of PomodoroSession
+  PomodoroSession does not copy
+  Settings. It holds a const reference.
+end note
+
+note right of Button
+  Button knows how to draw itself,
+  but it does not own the renderer.
+end note
+
+@enduml
