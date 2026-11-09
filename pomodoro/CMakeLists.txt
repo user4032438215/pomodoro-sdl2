@@ -35,6 +35,12 @@ target_link_libraries(pomodoro PRIVATE
     nlohmann_json::nlohmann_json
 )
 
+if(MSVC)
+    target_link_options(pomodoro PRIVATE
+        "$<$<CONFIG:Release>:/SUBSYSTEM:WINDOWS;/ENTRY:mainCRTStartup>"
+    )
+endif()
+
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/settings.json
     ${CMAKE_BINARY_DIR}/settings.json
